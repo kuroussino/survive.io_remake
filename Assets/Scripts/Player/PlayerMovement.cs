@@ -1,18 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.LowLevel;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] VariableReference<float> _baseMovement;
+    Vector2 lastMovementInput;
+    public void MovementInput(Vector2 direction)
     {
-        
+        lastMovementInput = direction;
     }
-
-    // Update is called once per frame
-    void Update()
+    public void AimInput(Vector2 delta)
     {
-        
+        Vector2Control sus = Mouse.current.position;
+        Vector2 mousePosition = sus.value;
+        Vector2 myPositionOnScreen = Camera.main.WorldToScreenPoint(transform.position);
+        Vector2 direction = mousePosition - myPositionOnScreen;
+        direction.Normalize();
+
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
+    }
+    private void Update()
+    {
+        Vector3 direction = lastMovementInput;
+        transform.position += direction * _baseMovement.Value;
     }
 }

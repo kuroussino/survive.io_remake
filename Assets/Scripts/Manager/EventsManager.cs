@@ -6,6 +6,7 @@ using UnityEngine;
 public static partial class EventsManager
 {
     public static Action<Vector2> playerMovementInput;
+    public static Action<Vector2> playerAimInput;
 
     public static Action playerFireInput;
     public static Action playerReloadInput;
