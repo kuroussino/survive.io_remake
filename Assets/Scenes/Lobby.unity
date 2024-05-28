@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 11719679}
   - component: {fileID: 11719678}
   m_Layer: 5
-  m_Name: LobbyInformation
+  m_Name: LobbyInformationCreate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1095,7 +1095,43 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1247239008}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 908694190}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 831185158}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1379320219}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: ConnectToLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1247239008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1180,7 +1216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timePing: 1.5
   hearthTime: 20
-  debugConnectionClient: {fileID: 0}
+  debugConnectionClient: {fileID: 1726610021}
   panelClientMode: {fileID: 0}
   panelServerMode: {fileID: 1440040724}
   debugConnectionServer: {fileID: 11719679}
@@ -1425,7 +1461,7 @@ GameObject:
   - component: {fileID: 1726610021}
   - component: {fileID: 1726610020}
   m_Layer: 5
-  m_Name: LobbyInformation
+  m_Name: LobbyInformationSearch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1447,7 +1483,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -159}
+  m_AnchoredPosition: {x: 0, y: -633}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1726610020
@@ -1596,9 +1632,9 @@ RectTransform:
   - {fileID: 599288127}
   m_Father: {fileID: 845569976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -116.554756}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 164.81104, y: 49.747}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1763048787

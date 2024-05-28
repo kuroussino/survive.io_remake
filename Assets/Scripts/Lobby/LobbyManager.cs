@@ -48,7 +48,7 @@ public class LobbyManager : MonoBehaviour
         {
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(LobbyName, maxPlayers);
             myLobby = lobby;
-            debugConnectionServer.text = $"{myLobby.Name} - {myLobby.MaxPlayers}";
+            debugConnectionServer.text = $"{myLobby.Name} - {myLobby.MaxPlayers} -  {myLobby.AvailableSlots}";
             print($"{myLobby.Name} - {myLobby.MaxPlayers}");
 
             StartCoroutine(LobbyHeartbeat());
@@ -64,7 +64,7 @@ public class LobbyManager : MonoBehaviour
 
     }
 
-    public async void ConnectToLobby(string mode)
+    public async void ConnectToLobby()
     {
         QueryLobbiesOptions optionsQueryLobbie = new QueryLobbiesOptions
         {
@@ -72,7 +72,7 @@ public class LobbyManager : MonoBehaviour
             Filters = new List<QueryFilter>()
             {
                 //new QueryFilter(QueryFilter.FieldOptions.MaxPlayers, "2", QueryFilter.OpOptions.LT),
-                new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "5", QueryFilter.OpOptions.LT)
+                new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT)
             },
             Order = new List<QueryOrder>
             {
@@ -93,6 +93,12 @@ public class LobbyManager : MonoBehaviour
             //print("exist lobbie?: " + response.Results[0].Id + response.Results[0].Name);
             Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
             myLobby = lobby;
+            string result = "";
+            foreach(Lobby lobbie in response.Results)
+            {
+                result = result + " " + lobbie.Name + " " + lobbie.AvailableSlots + "\n";
+            }
+            debugConnectionClient.text = result;
             //print("players: " + myLobby.Players.Count);
             //NetworkManager.Singleton.StartClient();
             //panelPlayStart.SetActive(true);
