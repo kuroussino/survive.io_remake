@@ -1,18 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ItemBox : MonoBehaviour
+/// <summary>
+/// Behaviour of the Box that drops items. Can be destroyed.
+/// </summary>
+public class ItemBox : NetworkBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Tooltip("Prefab that spawns whenever the item is destroyed")]
+    [SerializeField] private I_Item droppedItemPrefab;
+
+    public override void OnNetworkSpawn()
     {
-        
+        base.OnNetworkSpawn();
+        if (droppedItemPrefab == null)
+            print("I don't have an item! I should get a random one from a generator/scriptable!");
+        // Maybe use a item getter or a random from a scriptable
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage()
     {
-        
+        //Drop Item, Instantiate Item on Network and Despawn
     }
 }
