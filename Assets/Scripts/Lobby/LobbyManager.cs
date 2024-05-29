@@ -15,6 +15,10 @@ public class LobbyManager : MonoBehaviour
     int maxPlayers = 6;
     [SerializeField] private float timePing;
     [SerializeField] private float hearthTime;
+    [SerializeField] private TextMeshProUGUI namePlayer;
+    [SerializeField] private TextMeshProUGUI namePlayerStart;
+    [SerializeField] private TextMeshProUGUI namePlayerLobby;
+    private string playerName;
     //[SerializeField] private GameObject panelStart;
     #region Client
     [SerializeField] private TextMeshProUGUI debugConnectionClient;
@@ -28,11 +32,25 @@ public class LobbyManager : MonoBehaviour
 
     #endregion
     Lobby myLobby;
+    Lobby joinedLobby;
+    ILobbyEvents lobbyEvents;
     //private float timerUpdate = 2f;
     //private float currentTimerUpdate;
     private async void Start()
     {
-        await UnityServices.InitializeAsync();
+        playerName = "TestPlayer" + Random.Range(0, 100);
+        namePlayerStart.text = playerName;
+        // Create an instance of InitializationOptions
+        var initializationOptions = new InitializationOptions();
+
+        // Set custom player name option
+        initializationOptions.SetProfile(playerName);
+
+        // Initialize Unity Services with the custom options
+        await UnityServices.InitializeAsync(initializationOptions);
+
+
+        //await UnityServices.InitializeAsync();
 
         AuthenticationService.Instance.SignedIn += () =>
         {
@@ -46,10 +64,30 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
+            namePlayerLobby.text = playerName;
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(LobbyName, maxPlayers);
             myLobby = lobby;
             debugConnectionServer.text = $"{myLobby.Name} - {myLobby.MaxPlayers} -  {myLobby.AvailableSlots}";
             print($"{myLobby.Name} - {myLobby.MaxPlayers}");
+            var callbacks = new LobbyEventCallbacks();
+            callbacks.LobbyChanged += OnLobbyChanged;
+            callbacks.KickedFromLobby += OnKickedFromLobby;
+            callbacks.LobbyEventConnectionStateChanged += OnLobbyEventConnectionStateChanged;
+            try
+            {
+                lobbyEvents = await Lobbies.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
+            }
+            catch (LobbyServiceException ex)
+            {
+                switch (ex.Reason)
+                {
+                    case LobbyExceptionReason.AlreadySubscribedToLobby: Debug.LogWarning($"Already subscribed to lobby[{lobby.Id}]. We did not need to try and subscribe again. Exception Message: {ex.Message}"); break;
+                    case LobbyExceptionReason.SubscriptionToLobbyLostWhileBusy: Debug.LogError($"Subscription to lobby events was lost while it was busy trying to subscribe. Exception Message: {ex.Message}"); throw;
+                    case LobbyExceptionReason.LobbyEventServiceConnectionError: Debug.LogError($"Failed to connect to lobby events. Exception Message: {ex.Message}"); throw;
+                    default: throw;
+                }
+            }
+
 
             StartCoroutine(LobbyHeartbeat());
         }
@@ -64,8 +102,58 @@ public class LobbyManager : MonoBehaviour
 
     }
 
+    private void OnLobbyEventConnectionStateChanged(LobbyEventConnectionState state)
+    {
+        print("State change!!!");
+    }
+
+    private void OnKickedFromLobby()
+    {
+        print("kicked event change!!!");
+    }
+
+    private async void OnLobbyChanged(ILobbyChanges changes)
+    {
+        print($"call event change method");
+        if (changes.LobbyDeleted)
+        {
+            // Handle lobby being deleted
+            // Calling changes.ApplyToLobby will log a warning and do nothing
+        }
+        else
+        {
+            print($"call event change");
+            print(changes.PlayerLeft.Value.Count);
+            changes.ApplyToLobby(myLobby);
+            print(changes.PlayerLeft.Value.Count);
+            if (changes.PlayerLeft.Changed)
+            {
+                print($"player left change !!");
+                foreach (var player in changes.PlayerLeft.Value)
+                {
+                    print($"kicking some player {player}");
+                    try
+                    {
+
+                        await LobbyService.Instance.RemovePlayerAsync(myLobby.Id, player.ToString());
+                        print($"kicked player {player}");
+                    }
+                    catch (LobbyServiceException)
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                print($"player left NOOOOOOOOT change !!");
+            }
+        }
+    }
+
     public async void ConnectToLobby()
     {
+        namePlayer.text = playerName;
         QueryLobbiesOptions optionsQueryLobbie = new QueryLobbiesOptions
         {
             Count = 10,
@@ -92,13 +180,14 @@ public class LobbyManager : MonoBehaviour
             }
             //print("exist lobbie?: " + response.Results[0].Id + response.Results[0].Name);
             Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
-            myLobby = lobby;
+            joinedLobby = lobby;
             string result = "";
             foreach(Lobby lobbie in response.Results)
             {
                 result = result + " " + lobbie.Name + " " + lobbie.AvailableSlots + "\n";
             }
             debugConnectionClient.text = result;
+
             //print("players: " + myLobby.Players.Count);
             //NetworkManager.Singleton.StartClient();
             //panelPlayStart.SetActive(true);
@@ -122,12 +211,24 @@ public class LobbyManager : MonoBehaviour
             LobbyService.Instance.SendHeartbeatPingAsync(myLobby.Id);
             print("ping lobby for not die");
         }
+        print("Stop coroutine");
 
         //while (true)
         //{
         //    yield return new WaitForSeconds(time);
 
         //}
+    }
+
+    private void OnApplicationQuit()
+    {
+        print("call application kick");
+        try
+        {
+            LobbyService.Instance.RemovePlayerAsync(myLobby.Id, AuthenticationService.Instance.PlayerId);
+        }
+        catch (LobbyServiceException err) { }
+        //print($"kicked myself {player}");
     }
 
 }
