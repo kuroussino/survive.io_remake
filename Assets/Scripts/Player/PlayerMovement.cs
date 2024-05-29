@@ -28,6 +28,6 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         Vector3 direction = lastMovementInput;
-        transform.position += direction * _baseMovement.Value;
+        transform.position += direction * _baseMovement.Value * Time.deltaTime;
     }
 }

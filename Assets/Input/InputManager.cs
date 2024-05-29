@@ -16,4 +16,11 @@ public class InputManager : MonoBehaviour
         Vector2 delta = context.ReadValue<Vector2>();
         EventsManager.playerAimInput?.Invoke(delta);
     }
+    public void OnCameraSwitchInput(CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+
+        EventsManager.cameraSwitchInput?.Invoke();
+    }
 }
