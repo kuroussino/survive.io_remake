@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, I_Damageable
 {
     PlayerMovement movement;
 
@@ -28,5 +29,10 @@ public class Player : MonoBehaviour
     private void OnPlayerMovementInput(Vector2 vector)
     {
         movement.MovementInput(vector);
+    }
+
+    public void TakeDamage(float damageAmount)
+    {
+        Debug.Log($"Damage taken: {damageAmount}");
     }
 }
