@@ -384,7 +384,7 @@ Transform:
   m_GameObject: {fileID: 514069488}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -4.44, y: 1.52, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -543,7 +543,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -4.44, y: 1.52, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -651,7 +651,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 000000002fefd95285b2f7f8
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -893,7 +893,7 @@ SpriteMask:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 15d0c3709176029428a0da2f8cecf0b5, type: 2}
@@ -919,13 +919,13 @@ SpriteMask:
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: c734686e14afb2b42bf112c1e5ed6b86, type: 3}
   m_MaskAlphaCutoff: 0.2
-  m_FrontSortingLayerID: 0
+  m_FrontSortingLayerID: -117984635
   m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 0
+  m_FrontSortingLayer: 2
   m_BackSortingLayer: 0
   m_FrontSortingOrder: 0
   m_BackSortingOrder: 0
-  m_IsCustomRangeActive: 0
+  m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
 --- !u!50 &998529024
 Rigidbody2D:
@@ -1106,6 +1106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1502222191}
   - component: {fileID: 1502222190}
+  - component: {fileID: 1502222192}
   m_Layer: 0
   m_Name: RandomTree
   m_TagString: Untagged
@@ -1153,7 +1154,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: c734686e14afb2b42bf112c1e5ed6b86, type: 3}
   m_Color: {r: 0.25402117, g: 1, b: 0, a: 1}
   m_FlipX: 0
@@ -1163,7 +1164,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 2
   m_SpriteSortPoint: 0
 --- !u!4 &1502222191
 Transform:
@@ -1180,6 +1181,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!210 &1502222192
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502222189}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
+  m_SortAtRoot: 0
 --- !u!1 &1684715559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1259,11 +1272,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deathZoneHitbox: {fileID: 1755803971}
   safeZoneHitbox: {fileID: 998529026}
-  damagePerTick:
+  secondsPerDamageTick:
     useConst: 1
     constValue: 1
     variable: {fileID: 0}
-  secondsPerDamageTick:
+  damagePerDamageTick:
     useConst: 1
     constValue: 1
     variable: {fileID: 0}
@@ -1280,6 +1293,7 @@ GameObject:
   - component: {fileID: 1755803970}
   - component: {fileID: 1755803969}
   - component: {fileID: 1755803971}
+  - component: {fileID: 1755803972}
   m_Layer: 0
   m_Name: DamageZone
   m_TagString: Untagged
@@ -1342,9 +1356,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: c734686e14afb2b42bf112c1e5ed6b86, type: 3}
-  m_Color: {r: 0.509434, g: 0, b: 0.34066784, a: 0.70980394}
+  m_Color: {r: 0.5943396, g: 0, b: 0.48246393, a: 0.45490196}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1428,6 +1442,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b71f8e9316951478c064d554529c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!210 &1755803972
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755803966}
+  m_Enabled: 1
+  m_SortingLayerID: -117984635
+  m_SortingLayer: 2
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &1914641327
 GameObject:
   m_ObjectHideFlags: 0
@@ -1516,11 +1542,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1736502657578951582, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -4.44
       objectReference: {fileID: 0}
     - target: {fileID: 1736502657578951582, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.52
       objectReference: {fileID: 0}
     - target: {fileID: 1736502657578951582, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1553,6 +1579,30 @@ PrefabInstance:
     - target: {fileID: 1736502657578951582, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2845940725895677527, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
+      propertyPath: m_BackSortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2845940725895677527, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
+      propertyPath: m_FrontSortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2845940725895677527, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
+      propertyPath: m_BackSortingLayerID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2845940725895677527, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2845940725895677527, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
+      propertyPath: m_FrontSortingLayerID
+      value: 1390014255
+      objectReference: {fileID: 0}
+    - target: {fileID: 2845940725895677527, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
+      propertyPath: m_IsCustomRangeActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7700427343961830476, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
       propertyPath: m_Name

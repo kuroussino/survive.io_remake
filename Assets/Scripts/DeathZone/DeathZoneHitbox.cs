@@ -10,14 +10,22 @@ public class DeathZoneHitbox : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         I_Damageable damageable = collision.gameObject.GetComponent<I_Damageable>();
-        if(damageable != null)
-            damageableTrigger?.Invoke(damageable, true);
+        if (damageable == null)
+            return;
+        if (damageable.PermanentlyImmuneToDeathZone)
+            return;
+
+        damageableTrigger?.Invoke(damageable, true);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         I_Damageable damageable = collision.gameObject.GetComponent<I_Damageable>();
-        if (damageable != null)
-            damageableTrigger?.Invoke(damageable, false);
+        if (damageable == null)
+            return;
+        if (damageable.PermanentlyImmuneToDeathZone)
+            return;
+
+        damageableTrigger?.Invoke(damageable, false);
     }
 }

@@ -9,8 +9,8 @@ public class DeathZone : MonoBehaviour
     [SerializeField] DeathZoneHitbox deathZoneHitbox;
     [SerializeField] DeathZoneHitbox safeZoneHitbox;
 
-    [SerializeField] VariableReference<float> damagePerTick;
     [SerializeField] VariableReference<float> secondsPerDamageTick;
+    [SerializeField] VariableReference<float> damagePerDamageTick;
     Dictionary<I_Damageable, PlayerDeathZoneInfo> dictDamageableDamageTick;
 
     private void Awake()
@@ -42,7 +42,7 @@ public class DeathZone : MonoBehaviour
                 else
                 {
                     item.Value.AddTime(-secondsPerDamageTick);
-                    item.Key.TakeDamage(damagePerTick);
+                    item.Key.TakeDamage(damagePerDamageTick);
                 }
             }
         }

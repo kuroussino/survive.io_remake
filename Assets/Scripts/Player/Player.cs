@@ -6,11 +6,17 @@ using UnityEngine.Rendering.UI;
 
 public class Player : MonoBehaviour, I_Damageable
 {
+    const bool _permanentlyImmuneToDeathZone = false;
+    public bool PermanentlyImmuneToDeathZone => _permanentlyImmuneToDeathZone;
     PlayerMovement movement;
+    PlayerInventory inventory;
+    PlayerResources resources;
 
     private void Awake()
     {
         movement = GetComponent<PlayerMovement>();
+        resources = GetComponent<PlayerResources>();
+        inventory = GetComponent<PlayerInventory>();
     }
     private void OnEnable()
     {
@@ -33,6 +39,6 @@ public class Player : MonoBehaviour, I_Damageable
 
     public void TakeDamage(float damageAmount)
     {
-        Debug.Log($"Damage taken: {damageAmount}");
+        resources.TakeDirectDamage(damageAmount);
     }
 }
