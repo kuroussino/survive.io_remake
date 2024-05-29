@@ -16,8 +16,8 @@ public class PlayerMovement : MonoBehaviour
     }
     public void AimInput(Vector2 delta)
     {
-        Vector2Control sus = Mouse.current.position;
-        Vector2 mousePosition = sus.value;
+        Vector2Control mousePositionControl = Mouse.current.position;
+        Vector2 mousePosition = mousePositionControl.value;
         Vector2 myPositionOnScreen = Camera.main.WorldToScreenPoint(transform.position);
         Vector2 direction = mousePosition - myPositionOnScreen;
         direction.Normalize();

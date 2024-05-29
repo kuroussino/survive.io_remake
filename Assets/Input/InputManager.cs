@@ -23,4 +23,16 @@ public class InputManager : MonoBehaviour
 
         EventsManager.cameraSwitchInput?.Invoke();
     }
+    public void OnCameraPanInput(CallbackContext context)
+    {
+        if (context.performed)
+        {
+            EventsManager.cameraPanInput?.Invoke(true);
+            return;
+        }
+         
+
+        if (context.canceled)
+            EventsManager.cameraPanInput?.Invoke(false);
+    }
 }

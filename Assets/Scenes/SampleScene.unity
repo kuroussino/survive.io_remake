@@ -438,6 +438,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2d7b2939-1733-415f-bba6-c6210247b2a0
     m_ActionName: Player/Swap[/Keyboard/tab]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 482297875}
+        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_MethodName: OnCameraPanInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5d81f981-60a5-485d-887c-67ab42b667e2
+    m_ActionName: Player/CameraPan[/Keyboard/c]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -555,6 +571,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc70f060cf85faf4bb898c38894368fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panSpeed:
+    useConst: 1
+    constValue: 0.01
+    variable: {fileID: 0}
+  maxDistanceFromPlayer:
+    useConst: 1
+    constValue: 5
+    variable: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ public static partial class EventsManager
     public static Action playerReloadInput;
     public static Action playerHealInput;
     public static Action cameraSwitchInput;
+    public static Action<bool> cameraPanInput;
     #endregion
 
     public static Action<Transform> changePlayerCameraTarget;
