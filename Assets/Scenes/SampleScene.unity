@@ -405,7 +405,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panSpeed:
     useConst: 1
-    constValue: 0.005
+    constValue: 0.001
     variable: {fileID: 0}
   maxDistanceFromPlayer:
     useConst: 1
