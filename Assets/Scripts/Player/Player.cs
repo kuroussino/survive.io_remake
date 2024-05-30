@@ -39,6 +39,6 @@ public class Player : MonoBehaviour, I_Damageable
 
     public void TakeDamage(float damageAmount)
     {
-        resources.TakeDirectDamage(damageAmount);
+        resources?.TakeDirectDamage(damageAmount);
     }
 }
