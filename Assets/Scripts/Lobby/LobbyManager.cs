@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
-using UnityEngine.UI;
+using CI.PowerConsole;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -36,6 +35,11 @@ public class LobbyManager : MonoBehaviour
     ILobbyEvents lobbyEvents;
     //private float timerUpdate = 2f;
     //private float currentTimerUpdate;
+
+    private void Awake()
+    {
+        PowerConsole.Initialise();
+    }
     private async void Start()
     {
         playerName = "TestPlayer" + Random.Range(0, 100);
@@ -55,51 +59,97 @@ public class LobbyManager : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () =>
         {
             Debug.Log($" Sing in {AuthenticationService.Instance.PlayerId}");
+            PowerConsole.Log(LogLevel.Debug, $" Sing in {AuthenticationService.Instance.PlayerId}");
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        PowerConsole.CommandEntered += (s, e) =>
+        {
+            var enteredCommand = e.Command;
+        };
+
+        PowerConsole.RegisterCommand(new CustomCommand()
+        {
+            Command = "CreateLobby",
+            Callback = CreateLobby
+        });
+        PowerConsole.RegisterCommand(new CustomCommand()
+        {
+            Command = "SearchLobbies",
+            Callback = SearchLobbies
+        });
+        PowerConsole.RegisterCommand(new CustomCommand()
+        {
+            Command = "JoinLobby",
+            Args = new List<CommandArgument>()
+            {
+                new CommandArgument() {Name = "-code"}
+            },
+            Callback = JoinLobby
+        });
     }
 
-    public async void CreateLobby()
+    public async void CreateLobby(CommandCallback command)
     {
         try
         {
             namePlayerLobby.text = playerName;
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(LobbyName, maxPlayers);
+            LobbyName = LobbyName+ Random.Range(0, 100);
+            CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
+            {
+                Player = GetPlayer()
+            };
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(LobbyName, maxPlayers, createLobbyOptions);
             myLobby = lobby;
             debugConnectionServer.text = $"{myLobby.Name} - {myLobby.MaxPlayers} -  {myLobby.AvailableSlots}";
             print($"{myLobby.Name} - {myLobby.MaxPlayers}");
-            var callbacks = new LobbyEventCallbacks();
-            callbacks.LobbyChanged += OnLobbyChanged;
-            callbacks.KickedFromLobby += OnKickedFromLobby;
-            callbacks.LobbyEventConnectionStateChanged += OnLobbyEventConnectionStateChanged;
-            try
-            {
-                lobbyEvents = await Lobbies.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
-            }
-            catch (LobbyServiceException ex)
-            {
-                switch (ex.Reason)
-                {
-                    case LobbyExceptionReason.AlreadySubscribedToLobby: Debug.LogWarning($"Already subscribed to lobby[{lobby.Id}]. We did not need to try and subscribe again. Exception Message: {ex.Message}"); break;
-                    case LobbyExceptionReason.SubscriptionToLobbyLostWhileBusy: Debug.LogError($"Subscription to lobby events was lost while it was busy trying to subscribe. Exception Message: {ex.Message}"); throw;
-                    case LobbyExceptionReason.LobbyEventServiceConnectionError: Debug.LogError($"Failed to connect to lobby events. Exception Message: {ex.Message}"); throw;
-                    default: throw;
-                }
-            }
+            PowerConsole.Log(LogLevel.Debug, $"Lobby Created!");
+            PowerConsole.Log(LogLevel.Debug, $"Lobby Name: {myLobby.Name} - Lobby Max Players: {myLobby.MaxPlayers} Code: {myLobby.LobbyCode}");
+            //var callbacks = new LobbyEventCallbacks();
+            //callbacks.LobbyChanged += OnLobbyChanged;
+            //callbacks.KickedFromLobby += OnKickedFromLobby;
+            //callbacks.LobbyEventConnectionStateChanged += OnLobbyEventConnectionStateChanged;
+            //try
+            //{
+            //    lobbyEvents = await Lobbies.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
+            //}
+            //catch (LobbyServiceException ex)
+            //{
+            //    switch (ex.Reason)
+            //    {
+            //        case LobbyExceptionReason.AlreadySubscribedToLobby: Debug.LogWarning($"Already subscribed to lobby[{lobby.Id}]. We did not need to try and subscribe again. Exception Message: {ex.Message}"); break;
+            //        case LobbyExceptionReason.SubscriptionToLobbyLostWhileBusy: Debug.LogError($"Subscription to lobby events was lost while it was busy trying to subscribe. Exception Message: {ex.Message}"); throw;
+            //        case LobbyExceptionReason.LobbyEventServiceConnectionError: Debug.LogError($"Failed to connect to lobby events. Exception Message: {ex.Message}"); throw;
+            //        default: throw;
+            //    }
+            //}
 
 
             StartCoroutine(LobbyHeartbeat());
+            PrintPLayers(myLobby);
         }
-        catch (LobbyServiceException)
+        catch (LobbyServiceException err)
         {
             //debugConnectionServer.gameObject.SetActive(true);
             //StartCoroutine(DisableText(debugConnectionServer.gameObject));
             print("Error!!");
+            PowerConsole.Log(LogLevel.Error, $"Error creating lobby {err}");
             debugConnectionServer.text = "ERROR CONNECTION";
         }
 
 
+    }
+
+    private void PrintPLayers(Lobby lobby)
+    {
+        print($"Players in lobby {lobby.Name}");
+        PowerConsole.Log(LogLevel.Debug, $"Players in lobby {lobby.Name}");
+        foreach(Unity.Services.Lobbies.Models.Player player in lobby.Players)
+        {
+            print($"Player: {player.Data["PlayerName"].Value}");
+            PowerConsole.Log(LogLevel.Debug, $"Player: {player.Data["PlayerName"].Value}");
+        }
     }
 
     private void OnLobbyEventConnectionStateChanged(LobbyEventConnectionState state)
@@ -151,7 +201,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void ConnectToLobby()
+    public async void SearchLobbies(CommandCallback command)
     {
         namePlayer.text = playerName;
         QueryLobbiesOptions optionsQueryLobbie = new QueryLobbiesOptions
@@ -171,22 +221,25 @@ public class LobbyManager : MonoBehaviour
         {
             QueryResponse response = await Lobbies.Instance.QueryLobbiesAsync(optionsQueryLobbie);
             print($"Avaiable lobbies {response.Results.Count}");
+            PowerConsole.Log(LogLevel.Debug, $"Avaiable lobbies number: {response.Results.Count}");
             if (response.Results.Count <= 0)
             {
                 print("No Lobbie avaiable");
+                PowerConsole.Log(LogLevel.Warning, $"No Lobbie avaiable");
                 debugConnectionClient.text = "No Lobbie avaiable";
                 //StartCoroutine(DisableText(debugConnectionClient.gameObject));
                 return;
             }
             //print("exist lobbie?: " + response.Results[0].Id + response.Results[0].Name);
-            Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
-            joinedLobby = lobby;
+            //Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
+            //joinedLobby = lobby;
             string result = "";
             foreach(Lobby lobbie in response.Results)
             {
-                result = result + " " + lobbie.Name + " " + lobbie.AvailableSlots + "\n";
+                result = result + "Lobbie Name: " + lobbie.Name + "Lobbie slots free: " + lobbie.AvailableSlots + "\n";
             }
             debugConnectionClient.text = result;
+            PowerConsole.Log(LogLevel.Debug, $"all lobbies found: {result}");
 
             //print("players: " + myLobby.Players.Count);
             //NetworkManager.Singleton.StartClient();
@@ -196,6 +249,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException error)
         {
             print("ERROR IN CONNECT LOBBY " + error);
+            PowerConsole.Log(LogLevel.Error, $"Error found lobbies {error}");
             debugConnectionClient.text = "Error connecting to lobbie";
             //debugConnectionClient.gameObject.SetActive(true);
             //StartCoroutine(DisableText(debugConnectionClient.gameObject));
@@ -203,15 +257,46 @@ public class LobbyManager : MonoBehaviour
         }
         //UpdateLobby();
     }
+
+    public async void JoinLobby(CommandCallback command)
+    {
+        var lobbyToJoin = command.Args["-code"];
+        JoinLobbyByCodeOptions joinLobbyByCodeOptions = new JoinLobbyByCodeOptions()
+        {
+            Player = GetPlayer()
+        };
+        try 
+        {
+            Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyToJoin, joinLobbyByCodeOptions);
+            joinedLobby = lobby;
+            print($"Joined to {joinedLobby.Name}");
+            PowerConsole.Log(LogLevel.Debug, $"Joined to {joinedLobby.Name}");
+            PrintPLayers(joinedLobby); 
+        }
+        catch(LobbyServiceException err)
+        {
+            print($"Error joined lobby {err}");
+            PowerConsole.Log(LogLevel.Error, $"Error joined lobby {err}");
+        }
+
+    }
     private IEnumerator LobbyHeartbeat()
     {
+        print("Call coroutine hearthbeat");
+        PowerConsole.Log(LogLevel.Debug, $"Call coroutine hearthbeat");
         while (myLobby != null)
         {
+            print("Lobby is not null in coroutine");
+            PowerConsole.Log(LogLevel.Debug, $"Lobby is not null in coroutine");
             yield return new WaitForSeconds(hearthTime);
+            print($"After {hearthTime} seconds");
+            PowerConsole.Log(LogLevel.Debug, $"After {hearthTime} seconds");
             LobbyService.Instance.SendHeartbeatPingAsync(myLobby.Id);
             print("ping lobby for not die");
+            PowerConsole.Log(LogLevel.Debug, $"ping lobby for not die");
         }
-        print("Stop coroutine");
+        print("Stop corotutine hearthbeat");
+        PowerConsole.Log(LogLevel.Debug, $"Stop corotutine hearthbeat");
 
         //while (true)
         //{
@@ -220,14 +305,25 @@ public class LobbyManager : MonoBehaviour
         //}
     }
 
+    private Unity.Services.Lobbies.Models.Player GetPlayer()
+    {
+        return new Unity.Services.Lobbies.Models.Player
+        {
+            Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) }
+                    }
+        };
+    }
+
     private void OnApplicationQuit()
     {
-        print("call application kick");
-        try
-        {
-            LobbyService.Instance.RemovePlayerAsync(myLobby.Id, AuthenticationService.Instance.PlayerId);
-        }
-        catch (LobbyServiceException err) { }
+        //print("call application kick");
+        //try
+        //{
+        //    LobbyService.Instance.RemovePlayerAsync(myLobby.Id, AuthenticationService.Instance.PlayerId);
+        //}
+        //catch (LobbyServiceException err) { }
         //print($"kicked myself {player}");
     }
 
