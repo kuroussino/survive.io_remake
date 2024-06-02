@@ -78,7 +78,7 @@ public class LobbyManager : MonoBehaviour
         });
         PowerConsole.RegisterCommand(new CustomCommand()
         {
-            Command = "seachlobbies",
+            Command = "searchlobbies",
             Callback = SearchLobbiesCommand
         });
         PowerConsole.RegisterCommand(new CustomCommand()
