@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Services.Lobbies.Models;
 
 public static partial class EventsManager
 {
@@ -17,4 +18,8 @@ public static partial class EventsManager
     #endregion
 
     public static Action<Transform> changePlayerCameraTarget;
+
+    public static Action LobbyReady;
+    public static Action<Lobby> OnClientJoinLobbyWithID;
+    public static Action<string> OnHostCreateLobbyWithName;
 }

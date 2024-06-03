@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,13 +40,29 @@ public class LobbyUIManager : MonoBehaviour
     #endregion
 
     #region Mono
+
+    private void OnEnable()
+    {
+        EventsManager.LobbyReady += LobbyReadyEvent;
+    }
+
+    private void OnDisable()
+    {
+        EventsManager.LobbyReady -= LobbyReadyEvent;
+    }
+
+    private void LobbyReadyEvent()
+    {
+        RefreshLobbyList();
+    }
+
     private void Awake()
     {
         lobbyManager=GetComponent<LobbyManager>();
     }
     private void Start()
     {
-        RefreshLobbyList();
+        //RefreshLobbyList();
     }
     #endregion
     #region LobbyList

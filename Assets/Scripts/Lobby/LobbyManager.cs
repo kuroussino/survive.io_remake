@@ -82,6 +82,8 @@ public class LobbyManager : MonoBehaviour
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
+        EventsManager.LobbyReady?.Invoke();
+
         #region Powerconsole
         PowerConsole.CommandEntered += (s, e) =>
         {
