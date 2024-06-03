@@ -7,7 +7,7 @@ public sealed class SemiAutomaticWeapon : A_Weapon
 {
     protected override void ShootEffect()
     {
-        var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.localRotation).GetComponent<BulletBehaviour>();
+        var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.rotation).GetComponent<BulletBehaviour>();
         bullet.SetDataBulletFromWeapon(damage, bulletSpeed, range, bulletSprite);
         Debug.Log("Shoot");
         ShootingCooldown(cooldownShotsTime);
