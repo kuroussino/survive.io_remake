@@ -7,7 +7,7 @@ using UnityEngine;
 public class PickableInstance : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
-    private I_Item item;
+    public I_Item item;
 
     /// <summary>
     /// 
@@ -18,21 +18,21 @@ public class PickableInstance : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Input with PlayerInventory
     /// </summary>
-    protected void OnDestroy()
+    public void GetItem() 
     {
-        DeactivateUI();
+        print("yo ecco sono nell'inventario");
+        Destroy(gameObject);
     }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="item"></param>
-    public void SetPrefabToSpawn(I_Item item, Sprite sprite)
+    public void SetPrefabToSpawn(I_Item item)
     {
         this.item = item;
-        spriteRenderer.sprite = sprite;
     }
 
     /// <summary>
@@ -58,6 +58,16 @@ public class PickableInstance : MonoBehaviour
         var go = item as MonoBehaviour;
         if (go == null)
             return;
-        print($"DeEquip {go.name}");
+        print($"Out of {go.name}");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) 
+    {
+        ActivateUI();
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) 
+    {
+        DeactivateUI();
     }
 }
