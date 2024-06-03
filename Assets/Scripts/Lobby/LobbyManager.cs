@@ -403,7 +403,23 @@ public class LobbyManager : MonoBehaviour
                 playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(client.ClientId);
                 //EventsManager.changePlayerCameraTarget?.Invoke(playerInstance.transform);
             }
+            CloseLobby();
+            
         }
+    }
+
+    private void CloseLobby()
+    {
+        foreach(Unity.Services.Lobbies.Models.Player player in myLobby.Players)
+        {
+            if (!isHost())
+            {
+                KickPlayer(player.Id);
+            }
+            
+        }
+        LeaveLobby();
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"Lobby close with no errors");
     }
 
 
