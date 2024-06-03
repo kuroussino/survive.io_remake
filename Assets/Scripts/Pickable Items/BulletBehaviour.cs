@@ -20,8 +20,8 @@ public class BulletBehaviour : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out GameObject enemy))
-            print(damage);
+        if (collision.gameObject.TryGetComponent(out I_Damageable enemy))
+            enemy.TakeDamage(damage);
         if(!collision.gameObject.TryGetComponent(out BulletBehaviour bullet))
             Destroy(gameObject);
     }

@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public sealed class HealthPack : A_Support
 {
+    [SerializeField] private int healAmount;
     /// <summary>
     /// Choose which effect to activate based on <paramref name="isEquippable"/> variable.
     /// </summary>
@@ -14,18 +15,18 @@ public sealed class HealthPack : A_Support
     protected override void ActivateEffect(MonoBehaviour player)
     {
         if (isEquippable)
-            EquipmentEffect(player);
+            EquipmentEffect(player.GetComponent<PlayerInventory>());
         else
-            InstantEffect(player);
+            InstantEffect(player.GetComponent<PlayerResources>());
     }
 
     /// <summary>
     /// Instant effect of the HealthPack.
     /// </summary>
     /// <param name="player"></param>
-    private void InstantEffect(MonoBehaviour player)
+    private void InstantEffect(PlayerResources player)
     {
-        throw new NotImplementedException();
+        player.Heal(healAmount);
     }
 
 
@@ -33,7 +34,7 @@ public sealed class HealthPack : A_Support
     /// Effect of the HealthPack support item. 
     /// </summary>
     /// <param name="player"></param>
-    private void EquipmentEffect(MonoBehaviour player)
+    private void EquipmentEffect(PlayerInventory player)
     {
         throw new NotImplementedException();
     }
