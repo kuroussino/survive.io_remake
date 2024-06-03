@@ -34,6 +34,7 @@ public class LobbyUIManager : MonoBehaviour
     GameObject currentLobbyUI;
     int currentPageNumber = 0;
     string lobbyName;
+    bool isWaiting;
     [SerializeField] int numberOfLobbyWanted;
     #endregion
 
@@ -154,6 +155,10 @@ public class LobbyUIManager : MonoBehaviour
         }
         UpdatePageUI();
     }
+
+    /// <summary>
+    /// Update the UI of the pages counter
+    /// </summary>
     private void UpdatePageUI()
     {
         if (pages.Count > 0)
@@ -168,7 +173,11 @@ public class LobbyUIManager : MonoBehaviour
     }
     #endregion
 
+
     #region OnHost
+    /// <summary>
+    /// On Host will be called after clicking host lobby and will call the event using the name of the lobby
+    /// </summary>
     public void OnHost()
     {
         if (lobbyNameInputField.text != "")
@@ -183,10 +192,16 @@ public class LobbyUIManager : MonoBehaviour
     }
     private IEnumerator HandleMissingNameText()
     {
-        nameMissingText.text = "Name is missing or invalid";
-        nameMissingText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        nameMissingText.gameObject.SetActive(false);
+        if (!isWaiting)
+        {
+            isWaiting = true;
+            nameMissingText.text = "Lobby's name is missing or invalid";
+            nameMissingText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(2f);
+            nameMissingText.gameObject.SetActive(false);
+            isWaiting = false;
+
+        }
     }
     #endregion
 }
