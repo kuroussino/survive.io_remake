@@ -174,7 +174,7 @@ public class LobbyUIManager : MonoBehaviour
         if (lobbyNameInputField.text != "")
         {
             lobbyName = lobbyNameInputField.text;
-            EventsManager.OnHostCreateLobbyWithName?.Invoke(lobbyName);
+            //EventsManager.OnHostCreateLobbyWithName?.Invoke(lobbyName);
         }
         else
         {
