@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 
@@ -11,6 +12,8 @@ public class Player : MonoBehaviour, I_Damageable
     PlayerMovement movement;
     PlayerInventory inventory;
     PlayerResources resources;
+
+    bool isPressingFireInput = false;
 
     #region Mono
     private void Awake()
@@ -31,10 +34,12 @@ public class Player : MonoBehaviour, I_Damageable
         EventsManager.playerAimInput -= OnPlayerAimInput;
         EventsManager.playerFireInput -= OnPlayerFireInput;
     }
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return new WaitForSeconds(1);
+        NetworkManager.Singleton.StartHost();
         A_Weapon weapon = FindObjectOfType<A_Weapon>();
-        inventory.TryGetItem(weapon);
+        TryCollectItem(weapon);
     }
     #endregion
     private void OnPlayerAimInput(Vector2 vector)
@@ -43,7 +48,20 @@ public class Player : MonoBehaviour, I_Damageable
     }
     private void OnPlayerFireInput(bool fire)
     {
-        inventory.OnFireInput();
+        if (fire == isPressingFireInput)
+            return;
+
+        isPressingFireInput = fire;
+        if (fire)
+            StartCoroutine(FireInputHold());
+    }
+    IEnumerator FireInputHold()
+    {
+        while (isPressingFireInput)
+        {
+            inventory.OnFireInput();
+            yield return new WaitForEndOfFrame();
+        }
     }
     private void OnPlayerMovementInput(Vector2 vector)
     {
@@ -52,5 +70,14 @@ public class Player : MonoBehaviour, I_Damageable
     public void TakeDamage(float damageAmount)
     {
         resources?.TakeDirectDamage(damageAmount);
+    }
+    public void TryCollectItem(I_Item item)
+    {
+        inventory.TryGetItem(item, out EquipmentData equipmentData);
+        if(equipmentData.weapon != null)
+        {
+            A_Weapon weapon = equipmentData.weapon;
+            movement.EquipWeapon(weapon);
+        }
     }
 }

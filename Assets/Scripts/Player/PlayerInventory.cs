@@ -17,12 +17,14 @@ public class PlayerInventory : MonoBehaviour
     {
         weapon?.Reload();
     }
-    public void TryGetItem(I_Item item)
+    public void TryGetItem(I_Item item, out EquipmentData equipmentData)
     {
+        equipmentData = new EquipmentData();
         A_Weapon weapon = item as A_Weapon;
         if(weapon != null)
         {
             SortWeapon(weapon);
+            equipmentData.weapon = weapon;
             return;
         }
     }
@@ -30,4 +32,9 @@ public class PlayerInventory : MonoBehaviour
     {
         this.weapon = weapon;
     }
+}
+
+public class EquipmentData
+{
+    public A_Weapon weapon;
 }
