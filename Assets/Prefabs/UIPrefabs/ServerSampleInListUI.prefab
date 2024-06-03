@@ -812,6 +812,7 @@ MonoBehaviour:
   LobbyNameText: {fileID: 8502459452681813201}
   activePlayerInLobbyText: {fileID: 5547810862071045379}
   maxPlayerInLobbyText: {fileID: 6344560546815755533}
+  joinButton: {fileID: 6247820387570445336}
 --- !u!1 &7060339553861457684
 GameObject:
   m_ObjectHideFlags: 0
