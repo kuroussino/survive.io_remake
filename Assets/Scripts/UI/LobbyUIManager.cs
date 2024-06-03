@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEditor.UI;
@@ -25,16 +26,16 @@ public class LobbyUIManager : MonoBehaviour
 
     [Space(10)]
     [Header("Variables")]
-    QueryResponse lobbyList;
-    List<FakeLobbies> fakeLobbyList=new List<FakeLobbies>();
+    List<Lobby> lobbyList= new List<Lobby>();
+    //List<FakeLobbies> fakeLobbyList=new List<FakeLobbies>();
     List<GameObject> pages = new List<GameObject>();
-
     List<GameObject> pagesToDestroy = new List<GameObject>();
+
     GameObject currentPage;
     GameObject currentLobbyUI;
     int currentPageNumber = 0;
     string lobbyName;
-    [SerializeField] int numberOfLobbyWanted;
+    [SerializeField] int numberOfFakeLobbiesWanted;
     #endregion
 
     #region Mono
@@ -52,16 +53,23 @@ public class LobbyUIManager : MonoBehaviour
     {
         RefreshLobbyList();
     }
+
+    /// <summary>
+    /// Refresh the lobby list using the filters given in the lobbyManager, in order to update the UI and let the player join the lobby 
+    /// </summary>
     private void RefreshLobbyList()
     {
         //Prendere la lista di lobby, riempire gli slot di ogni pagina e creare una nuova pagina 
         DestroyOldPages();
         Debug.Log($"Pages after refreshing {pages.Count} ");
-        fakeLobbyList = GetFakeLobbyList();
-        if (fakeLobbyList.Count > 0)
+        //fakeLobbyList = GetFakeLobbyList();
+        GetLobbies();
+        Debug.Log(lobbyList.Count);
+        
+        if (lobbyList.Count > 0)
         {
             lobbyMissingtext.gameObject.SetActive(false);
-            for (int i = 0; i < fakeLobbyList.Count; i++)
+            for (int i = 0; i < lobbyList.Count; i++)
             {
                 if (i % 5 == 0)
                 {
@@ -76,7 +84,7 @@ public class LobbyUIManager : MonoBehaviour
                     //Se le lobby sono 5 passa alla pagina successiva, quindi crea una nuova pagina disabilitata e aggiungi le lobby nei nuovi slot.
                 }
                 currentLobbyUI=Instantiate(lobbyUI, currentPage.transform);
-                currentLobbyUI.GetComponent<LobbyHandleUI>().UpdateUI(fakeLobbyList[i]);
+                currentLobbyUI.GetComponent<LobbyHandleUI>().UpdateUI(lobbyList[i]);
                 //Ogni UI si controlla e aggiorna da sola, il tasto join viene controllato dalla lobby UI.
             }
             
@@ -90,21 +98,25 @@ public class LobbyUIManager : MonoBehaviour
         UpdatePageUI();
 
     }
+    private async void GetLobbies()
+    {
+        lobbyList = await lobbyManager.SearchLobbies();
+    }
 
    /// <summary>
    /// Get a list of fake lobbies containing name, max players and current players. Method needed as testing purpose only
    /// </summary>
    /// <returns></returns>
-    private List<FakeLobbies> GetFakeLobbyList()
-    {
-        List<FakeLobbies> lobbyList = new List<FakeLobbies>(); 
-        for(int i = 1; i <= numberOfLobbyWanted; i++)
-        {
-            FakeLobbies lobby = new FakeLobbies($"Lobby {i}", 6, Random.Range(0,7)); // Example: each lobby has max 10 players and starts with 0 current players
-            lobbyList.Add(lobby);
-        }
-        return lobbyList;
-    }
+    //private List<FakeLobbies> GetFakeLobbyList()
+    //{
+    //    List<FakeLobbies> lobbyList = new List<FakeLobbies>(); 
+    //    for(int i = 1; i <= numberOfFakeLobbiesWanted; i++)
+    //    {
+    //        FakeLobbies lobby = new FakeLobbies($"Lobby {i}", 6, Random.Range(0,7)); // Example: each lobby has max 10 players and starts with 0 current players
+    //        lobbyList.Add(lobby);
+    //    }
+    //    return lobbyList;
+    //}
 
     /// <summary>
     /// Destroy the old pages of the Lobby List UI in order to create new ones.
@@ -174,7 +186,7 @@ public class LobbyUIManager : MonoBehaviour
         if (lobbyNameInputField.text != "")
         {
             lobbyName = lobbyNameInputField.text;
-            //EventsManager.OnHostCreateLobbyWithName?.Invoke(lobbyName);
+            EventsManager.OnHostCreateLobbyWithName?.Invoke(lobbyName);
         }
         else
         {
@@ -192,21 +204,21 @@ public class LobbyUIManager : MonoBehaviour
 }
 
 
-#region struct lobbies
-/// <summary>
-/// Fake lobbies struct, needed for testing purpose only.
-/// </summary>
-/// 
-public struct FakeLobbies
-    {
-       public string LobbyName;
-       public int maxPlayer;
-       public int currentPlayer;
-       public FakeLobbies(string Name,int maxPlayer,int currentPlayer)
-      {
-          LobbyName = Name;
-          this.maxPlayer = maxPlayer;
-          this.currentPlayer = currentPlayer;
-      }
-    }
-    #endregion
+    //#region struct lobbies
+    ///// <summary>
+    ///// Fake lobbies struct, needed for testing purpose only.
+    ///// </summary>
+    ///// 
+    //public struct FakeLobbies
+    //{
+    //   public string LobbyName;
+    //   public int maxPlayer;
+    //   public int currentPlayer;
+    //   public FakeLobbies(string Name,int maxPlayer,int currentPlayer)
+    //  {
+    //      LobbyName = Name;
+    //      this.maxPlayer = maxPlayer;
+    //      this.currentPlayer = currentPlayer;
+    //  }
+    //}
+    //#endregion
