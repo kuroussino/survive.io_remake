@@ -1762,6 +1762,7 @@ MonoBehaviour:
   minimumPlayersForStart: 2
   timeUpdate: 1.1
   hearthTime: 20
+  playerPrefab: {fileID: 8659422206625736384, guid: 9503527d12f75e94fbd27938f363a037, type: 3}
   debugConnectionClient: {fileID: 1726610021}
   panelClientMode: {fileID: 831185158}
   panelServerMode: {fileID: 1440040724}
@@ -2181,7 +2182,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 50, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 164.81104, y: 49.747}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1763048787
@@ -2351,7 +2352,8 @@ MonoBehaviour:
     NetworkTransport: {fileID: 1947895318}
     PlayerPrefab: {fileID: 0}
     Prefabs:
-      NetworkPrefabsLists: []
+      NetworkPrefabsLists:
+      - {fileID: 11400000, guid: 78e9bb1d097a3794bb8f5114e5f85637, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
