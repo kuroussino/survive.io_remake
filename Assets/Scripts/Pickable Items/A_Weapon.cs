@@ -12,7 +12,7 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
 
     [Header("Stats and Variables")]
     [Space(6)]
-    [Tooltip("The damage the bullet of the weapon deals.")]
+    [Tooltip("The damage a single bullet of the weapon deals.")]
     [SerializeField] protected float damage; // To check with the bullet speed, in order to work well
     [Tooltip("Range in Units/m where the bullets gets destroyed.")]
     [SerializeField] protected float range; // To check with the bullet speed, in order to work well
@@ -40,6 +40,11 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     [SerializeField] protected AudioClip outOfBulletsSound;
 
     /// <summary>
+    /// 
+    /// </summary>
+    protected int currentNumberAmmoMagazine;
+    
+    /// <summary>
     /// Linked to the canHoldForAutomaticFire variable, goes true when player used the fire button
     /// </summary>
     private bool alreadyShooted = false;
@@ -50,7 +55,6 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     private bool canShoot = true;
 
 
-    private int currentNumberAmmoMagazine;
 
     #endregion
 
@@ -89,14 +93,12 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
             Debug.Log("Can't Shoot!");
             return;
         }
-        if (numberAmmoMagazine > 0)
+        if (numberAmmoMagazine <= 0)
         {
             Debug.Log("Out of bullets!");
             return;
         }
         ShootEffect();
-        currentNumberAmmoMagazine--;
-        EventsManager.WeaponUpdateBullets?.Invoke(currentNumberAmmoMagazine);
         if (!holdForAutoFire)
             alreadyShooted = true;
     }
