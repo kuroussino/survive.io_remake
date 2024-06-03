@@ -9,9 +9,8 @@ public class BulletBehaviour : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    private void FixedUpdate()
-    {
-        transform.localPosition += (transform.up * speed * Time.fixedDeltaTime);
+    private void FixedUpdate() {
+        transform.localPosition += transform.up * speed * Time.fixedDeltaTime;
     }
 
     /// <summary>

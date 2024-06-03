@@ -18,7 +18,7 @@ public sealed class ShotgunWeapon : A_Weapon
     {
         for (float i = 0; i <= numberOfBulletsPerShoot; i++) {
             Quaternion randomnessVector = Quaternion.Euler(0, 0, Random.Range(-randomAngleBullets, randomAngleBullets));
-            var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.localRotation * randomnessVector).GetComponent<BulletBehaviour>();
+            var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.rotation * randomnessVector).GetComponent<BulletBehaviour>();
             bullet.SetDataBulletFromWeapon(damage, bulletSpeed, range, bulletSprite);
             Debug.Log("Shoot");
         }
