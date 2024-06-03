@@ -10,11 +10,11 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] VariableReference<float> _baseMovement;
     Vector2 lastMovementInput;
-    public void MovementInput(Vector2 direction)
+    public void OnMovementInput(Vector2 direction)
     {
         lastMovementInput = direction;
     }
-    public void AimInput(Vector2 delta)
+    public void OnAimInput(Vector2 delta)
     {
         Vector2Control mousePositionControl = Mouse.current.position;
         Vector2 mousePosition = mousePositionControl.value;

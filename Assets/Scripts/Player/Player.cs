@@ -12,6 +12,7 @@ public class Player : MonoBehaviour, I_Damageable
     PlayerInventory inventory;
     PlayerResources resources;
 
+    #region Mono
     private void Awake()
     {
         movement = GetComponent<PlayerMovement>();
@@ -22,21 +23,32 @@ public class Player : MonoBehaviour, I_Damageable
     {
         EventsManager.playerMovementInput += OnPlayerMovementInput;
         EventsManager.playerAimInput += OnPlayerAimInput;
+        EventsManager.playerFireInput += OnPlayerFireInput;
     }
     private void OnDisable()
     {
         EventsManager.playerMovementInput -= OnPlayerMovementInput;
         EventsManager.playerAimInput -= OnPlayerAimInput;
+        EventsManager.playerFireInput -= OnPlayerFireInput;
     }
+    private void Start()
+    {
+        A_Weapon weapon = FindObjectOfType<A_Weapon>();
+        inventory.TryGetItem(weapon);
+    }
+    #endregion
     private void OnPlayerAimInput(Vector2 vector)
     {
-        movement.AimInput(vector);
+        movement.OnAimInput(vector);
+    }
+    private void OnPlayerFireInput(bool fire)
+    {
+        inventory.OnFireInput();
     }
     private void OnPlayerMovementInput(Vector2 vector)
     {
-        movement.MovementInput(vector);
+        movement.OnMovementInput(vector);
     }
-
     public void TakeDamage(float damageAmount)
     {
         resources?.TakeDirectDamage(damageAmount);
