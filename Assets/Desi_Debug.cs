@@ -12,12 +12,9 @@ public class Desi_Debug : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Mouse0))
         {
-            pick = Instantiate(pickablePrefab, transform.position, Quaternion.identity);
-            pick.SetPrefabToSpawn(weapon);
-        }
-        else if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-             
+            weapon.Shoot();
+            //pick = Instantiate(pickablePrefab, transform.position, Quaternion.identity);
+            //pick.SetPrefabToSpawn(weapon);
         }
     }
 }
