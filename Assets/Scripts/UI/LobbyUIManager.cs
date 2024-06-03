@@ -1,0 +1,212 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using Unity.Services.Lobbies.Models;
+using UnityEditor.UI;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class LobbyUIManager : MonoBehaviour
+{
+    #region Variables
+
+    [Header("UI lobby var")]
+    [SerializeField] TMP_InputField lobbyNameInputField;
+    [SerializeField] GameObject lobbyUI;
+    [SerializeField] GameObject PageUI;
+    [SerializeField] GameObject PageContainerUI;
+    [SerializeField] TextMeshProUGUI lobbyMissingtext;
+    [SerializeField] TextMeshProUGUI pagesCountText;
+    [SerializeField] TextMeshProUGUI nameMissingText;
+
+    [Space(10)]
+    [Header("Lobby Manager")]
+    LobbyManager lobbyManager;
+
+    [Space(10)]
+    [Header("Variables")]
+    QueryResponse lobbyList;
+    List<FakeLobbies> fakeLobbyList=new List<FakeLobbies>();
+    List<GameObject> pages = new List<GameObject>();
+
+    List<GameObject> pagesToDestroy = new List<GameObject>();
+    GameObject currentPage;
+    GameObject currentLobbyUI;
+    int currentPageNumber = 0;
+    string lobbyName;
+    [SerializeField] int numberOfLobbyWanted;
+    #endregion
+
+    #region Mono
+    private void Awake()
+    {
+        lobbyManager=GetComponent<LobbyManager>();
+    }
+    private void Start()
+    {
+        RefreshLobbyList();
+    }
+    #endregion
+    #region LobbyList
+    public void RefreshButton()
+    {
+        RefreshLobbyList();
+    }
+    private void RefreshLobbyList()
+    {
+        //Prendere la lista di lobby, riempire gli slot di ogni pagina e creare una nuova pagina 
+        DestroyOldPages();
+        Debug.Log($"Pages after refreshing {pages.Count} ");
+        fakeLobbyList = GetFakeLobbyList();
+        if (fakeLobbyList.Count > 0)
+        {
+            lobbyMissingtext.gameObject.SetActive(false);
+            for (int i = 0; i < fakeLobbyList.Count; i++)
+            {
+                if (i % 5 == 0)
+                {
+                    Debug.Log(i);
+                    currentPage = Instantiate(PageUI,PageContainerUI.transform);
+                    pages.Add(currentPage);
+                    if (i == 0)
+                    {
+                        currentPage.SetActive(true);
+                        currentPageNumber = 0;
+                    }
+                    //Se le lobby sono 5 passa alla pagina successiva, quindi crea una nuova pagina disabilitata e aggiungi le lobby nei nuovi slot.
+                }
+                currentLobbyUI=Instantiate(lobbyUI, currentPage.transform);
+                currentLobbyUI.GetComponent<LobbyHandleUI>().UpdateUI(fakeLobbyList[i]);
+                //Ogni UI si controlla e aggiorna da sola, il tasto join viene controllato dalla lobby UI.
+            }
+            
+            Debug.Log($"Pages: {pages.Count}");
+        }
+        else
+        {
+            lobbyMissingtext.gameObject.SetActive(true);
+            Debug.Log("No lobby Found");
+        }
+        UpdatePageUI();
+
+    }
+
+   /// <summary>
+   /// Get a list of fake lobbies containing name, max players and current players. Method needed as testing purpose only
+   /// </summary>
+   /// <returns></returns>
+    private List<FakeLobbies> GetFakeLobbyList()
+    {
+        List<FakeLobbies> lobbyList = new List<FakeLobbies>(); 
+        for(int i = 1; i <= numberOfLobbyWanted; i++)
+        {
+            FakeLobbies lobby = new FakeLobbies($"Lobby {i}", 6, Random.Range(0,7)); // Example: each lobby has max 10 players and starts with 0 current players
+            lobbyList.Add(lobby);
+        }
+        return lobbyList;
+    }
+
+    /// <summary>
+    /// Destroy the old pages of the Lobby List UI in order to create new ones.
+    /// </summary>
+    private void DestroyOldPages()
+    {
+        pagesToDestroy = pages;
+        Debug.Log("Pages to destryo count "+pagesToDestroy.Count);
+        foreach (GameObject page in pagesToDestroy)
+        {
+            if (page != null)
+            {
+                Debug.Log($"Destroying page {page.name}");
+                page.SetActive(false);
+                Destroy(page);
+            }
+        }
+        pagesToDestroy.Clear();
+        pages.Clear();
+        Debug.Log($"Destroyed old pages, now having {pages.Count} pages");
+    }
+
+    /// <summary>
+    /// Changes the page on the arrow button click
+    /// </summary>
+    public void ChangePagePlus()
+    {
+        if (currentPageNumber+1<pages.Count)
+        {
+            pages[currentPageNumber].SetActive(false);
+            currentPageNumber++;
+            pages[currentPageNumber].SetActive(true);
+        }
+        UpdatePageUI();
+    }
+
+    /// <summary>
+    /// Changes the page on the arrow button click
+    /// </summary>
+    public void ChangePageMinus()
+    {
+        if (currentPageNumber-1>=0)
+        {
+            pages[currentPageNumber].SetActive(false);
+            currentPageNumber--;
+            pages[currentPageNumber].SetActive(true);
+        }
+        UpdatePageUI();
+    }
+    private void UpdatePageUI()
+    {
+        if (pages.Count > 0)
+        {
+            pagesCountText.text = $"{currentPageNumber+1} / {pages.Count}";
+        }
+        else
+        {
+            pagesCountText.text = $"{currentPageNumber} / {pages.Count}";
+        }
+        
+    }
+    #endregion
+
+    #region OnHost
+    public void OnHost()
+    {
+        if (lobbyNameInputField.text != "")
+        {
+            lobbyName = lobbyNameInputField.text;
+            EventsManager.OnHostCreateLobbyWithName?.Invoke(lobbyName);
+        }
+        else
+        {
+            StartCoroutine(HandleMissingNameText());
+        }
+    }
+    private IEnumerator HandleMissingNameText()
+    {
+        nameMissingText.text = "Name is missing or invalid";
+        nameMissingText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        nameMissingText.gameObject.SetActive(false);
+    }
+    #endregion
+}
+
+
+#region struct lobbies
+/// <summary>
+/// Fake lobbies struct, needed for testing purpose only.
+/// </summary>
+/// 
+public struct FakeLobbies
+    {
+       public string LobbyName;
+       public int maxPlayer;
+       public int currentPlayer;
+       public FakeLobbies(string Name,int maxPlayer,int currentPlayer)
+      {
+          LobbyName = Name;
+          this.maxPlayer = maxPlayer;
+          this.currentPlayer = currentPlayer;
+      }
+    }
+    #endregion
