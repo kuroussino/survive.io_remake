@@ -13,6 +13,8 @@ using Unity.Networking.Transport.Relay;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -223,7 +225,7 @@ public class LobbyManager : MonoBehaviour
 
     }
 
-    public async void SearchLobbies()
+    public async Task<List<Lobby>> SearchLobbies()
     {
         //namePlayer.text = playerName;
         QueryLobbiesOptions optionsQueryLobbie = new QueryLobbiesOptions
@@ -249,7 +251,7 @@ public class LobbyManager : MonoBehaviour
                 //PowerConsole.Log(CI.PowerConsole.LogLevel.Warning, $"No Lobbie avaiable");
                 //debugConnectionClient.text = "No Lobbie avaiable";
                 //StartCoroutine(DisableText(debugConnectionClient.gameObject));
-                return;
+                return null;
             }
             //print("exist lobbie?: " + response.Results[0].Id + response.Results[0].Name);
             //Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
@@ -259,6 +261,7 @@ public class LobbyManager : MonoBehaviour
             {
                 result = result + "Lobbie Name: " + lobbie.Name + "Lobbie slots free: " + lobbie.AvailableSlots + "\n";
             }
+            return response.Results;
             //debugConnectionClient.text = result;
             //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"all lobbies found: {result}");
 
@@ -270,6 +273,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException error)
         {
             print("ERROR IN CONNECT LOBBY " + error);
+            return null;
             //PowerConsole.Log(CI.PowerConsole.LogLevel.Error, $"Error found lobbies {error}");
             //debugConnectionClient.text = "Error connecting to lobbie";
             //debugConnectionClient.gameObject.SetActive(true);
@@ -397,6 +401,7 @@ public class LobbyManager : MonoBehaviour
             {
                 GameObject playerInstance = Instantiate(playerPrefab);
                 playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(client.ClientId);
+                //EventsManager.changePlayerCameraTarget?.Invoke(playerInstance.transform);
             }
         }
     }
