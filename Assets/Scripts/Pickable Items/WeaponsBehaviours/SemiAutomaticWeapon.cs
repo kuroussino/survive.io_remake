@@ -11,6 +11,8 @@ public sealed class SemiAutomaticWeapon : A_Weapon
         bullet.SetDataBulletFromWeapon(damage, bulletSpeed, range, bulletSprite);
         Debug.Log("Shoot");
         ShootingCooldown(cooldownShotsTime);
+        currentNumberAmmoMagazine--;
+        EventsManager.WeaponUpdateBullets?.Invoke(currentNumberAmmoMagazine);
     }
 
     // Semi-Automatic Method Coroutine dedicated? (yes)

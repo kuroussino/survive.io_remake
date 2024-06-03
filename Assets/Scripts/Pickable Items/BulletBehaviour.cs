@@ -4,6 +4,7 @@ public class BulletBehaviour : MonoBehaviour
 {
     private float damage;
     private float speed;
+    private Vector3 direction;
 
     /// <summary>
     /// 
@@ -21,7 +22,8 @@ public class BulletBehaviour : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out GameObject enemy))
             print(damage);
-        Destroy(gameObject);
+        if(!collision.gameObject.TryGetComponent(out BulletBehaviour bullet))
+            Destroy(gameObject);
     }
 
     /// <summary>
