@@ -38,6 +38,8 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     [SerializeField] protected AudioClip reloadSound;
     [Tooltip("Sound used when the weapon is out of bullets and it's still trying to shoot.")]
     [SerializeField] protected AudioClip outOfBulletsSound;
+    [Tooltip("Position of the second hand")]
+    [SerializeField] protected Transform secondHandPosition;
 
     /// <summary>
     /// 
@@ -170,7 +172,15 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
         canShoot = true;
     }
 
-
+    /// <summary>
+    /// Returns the position where the second hand of the player should be to look like he is wielding the weapon
+    /// </summary>
+    /// <returns>
+    /// </returns>
+    public Transform GetSecondHandPosition()
+    {
+        return secondHandPosition;
+    }
 
     #endregion
 }
