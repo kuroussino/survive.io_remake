@@ -20,6 +20,5 @@ public static partial class EventsManager
     public static Action<Transform> changePlayerCameraTarget;
 
     public static Action LobbyReady;
-    public static Action<Lobby> OnClientJoinLobbyWithID;
-    public static Action<string> OnHostCreateLobbyWithName;
+
 }
