@@ -36,6 +36,9 @@ public class PlayerCamera : MonoBehaviour
     }
     private void OnCameraPanInput(bool obj)
     {
+        if (_camera.m_Follow == null)
+            return;
+
         isPanning = obj;
 
         if (isPanning)
