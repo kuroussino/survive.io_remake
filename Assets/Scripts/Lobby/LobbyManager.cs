@@ -12,6 +12,7 @@ using Unity.Services.Relay.Models;
 using Unity.Networking.Transport.Relay;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -26,7 +27,9 @@ public class LobbyManager : MonoBehaviour
     //[SerializeField] private TextMeshProUGUI namePlayerLobby;
     private string playerName;
     private int countForStartGame;
+    private int countOfPlayersLoaded;
     private bool doOnce = true;
+    [SerializeField] private GameObject playerPrefab;
     //[SerializeField] private GameObject panelStart;
     #region Client
     [SerializeField] private TextMeshProUGUI debugConnectionClient;
@@ -49,20 +52,10 @@ public class LobbyManager : MonoBehaviour
     private void Awake()
     {
         PowerConsole.Initialise();
+        DontDestroyOnLoad(this.gameObject);
         
 
     }
-
-    private void OnEnable()
-    {
-        
-    }
-    private void OnDisable()
-    {
-        //NetworkManager.Singleton.OnClientConnectedCallback -= ConnectedClientEvent;
-    }
-
-
 
     private async void Start()
     {
@@ -388,9 +381,26 @@ public class LobbyManager : MonoBehaviour
         if(countForStartGame == myLobby.Players.Count && isHost())
         {
             PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"HOST START GAME ! YEAH!");
-            NetworkManager.Singleton.SceneManager.LoadScene("TestGameplay", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.OnLoadComplete += LoadCompleteEvent;
+            NetworkManager.Singleton.SceneManager.LoadScene("TestGameplay", LoadSceneMode.Single);
         }
     }
+
+    private void LoadCompleteEvent(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"{clientId} finish load scene");
+        countOfPlayersLoaded++;
+        if(countOfPlayersLoaded == myLobby.Players.Count)
+        {
+            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"all players are sync in scene");
+            foreach(NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                GameObject playerInstance = Instantiate(playerPrefab);
+                playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(client.ClientId);
+            }
+        }
+    }
+
 
     private bool isHost()
     {
