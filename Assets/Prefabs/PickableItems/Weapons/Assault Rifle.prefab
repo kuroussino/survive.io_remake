@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8842553501563743998}
+  - component: {fileID: 4725551892698572546}
   - component: {fileID: 8389689593491966545}
   - component: {fileID: 5639574957867512784}
-  - component: {fileID: 4641130193470356526}
   m_Layer: 0
-  m_Name: Shotgun Rifle
+  m_Name: Assault Rifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,6 +35,33 @@ Transform:
   - {fileID: 5080775521263037087}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4725551892698572546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6525918547395050275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f40f24cb73a85d46bb18ae5853eb3a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 20
+  range: 2
+  numberAmmoMagazine: 10
+  reloadTime: 2
+  cooldownShotsTime: 1
+  bulletSpeed: 10
+  holdForAutoFire: 1
+  bulletPrefab: {fileID: 5881102311739333002, guid: 135203b8572ddbb40a6725d9408b05f6, type: 3}
+  bulletSpawnPoint: {fileID: 5080775521263037087}
+  bulletSprite: {fileID: -2413806693520163455, guid: c734686e14afb2b42bf112c1e5ed6b86, type: 3}
+  shootSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  outOfBulletsSound: {fileID: 0}
+  weaponSprite: {fileID: 21300000, guid: 5dcc7958990b58542af6473437551376, type: 3}
+  pickableInstance: {fileID: 6849669246754306649, guid: ff4b99a38c8b7954ebd4aeb26cc9dbd4, type: 3}
 --- !u!212 &8389689593491966545
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -107,33 +134,6 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &4641130193470356526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6525918547395050275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65b503d87e7345d45b32c06fb0cccc37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 20
-  range: 3
-  numberAmmoMagazine: 12
-  reloadTime: 5
-  cooldownShotsTime: 1
-  bulletSpeed: 10
-  holdForAutoFire: 0
-  bulletPrefab: {fileID: 5881102311739333002, guid: 135203b8572ddbb40a6725d9408b05f6, type: 3}
-  bulletSpawnPoint: {fileID: 5080775521263037087}
-  bulletSprite: {fileID: -2413806693520163455, guid: c734686e14afb2b42bf112c1e5ed6b86, type: 3}
-  shootSound: {fileID: 0}
-  reloadSound: {fileID: 0}
-  outOfBulletsSound: {fileID: 0}
-  numberOfBulletsPerShoot: 3
-  randomAngleBullets: 10
 --- !u!1 &7100849539705726616
 GameObject:
   m_ObjectHideFlags: 0

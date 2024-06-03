@@ -10,7 +10,6 @@ public sealed class SemiAutomaticWeapon : A_Weapon
         var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.localRotation).GetComponent<BulletBehaviour>();
         bullet.SetDataBulletFromWeapon(damage, bulletSpeed, range, bulletSprite);
         Debug.Log("Shoot");
-        ShootingCooldown(cooldownShotsTime);
         currentNumberAmmoMagazine--;
         EventsManager.WeaponUpdateBullets?.Invoke(currentNumberAmmoMagazine);
     }
