@@ -46,7 +46,7 @@ public class LobbyHandleUI : MonoBehaviour
     public void joinLobbywithID()
     {
         Debug.Log($"Entering lobby by ID {LobbyNameText.text}");
-        EventsManager.OnClientJoinLobbyWithID?.Invoke(myLobby);
+        //EventsManager.OnClientJoinLobbyWithID?.Invoke(myLobby);
     }
     #endregion
 }
