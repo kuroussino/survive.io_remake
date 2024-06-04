@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
-using UnityEditor.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LobbyUIManager : MonoBehaviour
 {
@@ -74,50 +73,63 @@ public class LobbyUIManager : MonoBehaviour
     /// <summary>
     /// Refresh the lobby list using the filters given in the lobbyManager, in order to update the UI and let the player join the lobby 
     /// </summary>
-    private void RefreshLobbyList()
+    private async void RefreshLobbyList()
     {
         //Prendere la lista di lobby, riempire gli slot di ogni pagina e creare una nuova pagina 
         DestroyOldPages();
         Debug.Log($"Pages after refreshing {pages.Count} ");
         //fakeLobbyList = GetFakeLobbyList();
-        GetLobbies();
-        Debug.Log(lobbyList.Count);
-        
-        if (lobbyList.Count > 0)
+        await GetLobbies();
+        if (lobbyList != null)
         {
-            lobbyMissingtext.gameObject.SetActive(false);
-            for (int i = 0; i < lobbyList.Count; i++)
+            Debug.Log(lobbyList.Count);
+            if (lobbyList.Count > 0)
             {
-                if (i % 5 == 0)
+                lobbyMissingtext.gameObject.SetActive(false);
+                for (int i = 0; i < lobbyList.Count; i++)
                 {
-                    Debug.Log(i);
-                    currentPage = Instantiate(PageUI,PageContainerUI.transform);
-                    pages.Add(currentPage);
-                    if (i == 0)
+                    if (i % 5 == 0)
                     {
-                        currentPage.SetActive(true);
-                        currentPageNumber = 0;
+                        Debug.Log(i);
+                        currentPage = Instantiate(PageUI, PageContainerUI.transform);
+                        pages.Add(currentPage);
+                        if (i == 0)
+                        {
+                            currentPage.SetActive(true);
+                            currentPageNumber = 0;
+                        }
+                        //Se le lobby sono 5 passa alla pagina successiva, quindi crea una nuova pagina disabilitata e aggiungi le lobby nei nuovi slot.
                     }
-                    //Se le lobby sono 5 passa alla pagina successiva, quindi crea una nuova pagina disabilitata e aggiungi le lobby nei nuovi slot.
+                    currentLobbyUI = Instantiate(lobbyUI, currentPage.transform);
+                    currentLobbyUI.GetComponent<LobbyHandleUI>().UpdateUI(lobbyList[i]);
+                    //Ogni UI si controlla e aggiorna da sola, il tasto join viene controllato dalla lobby UI.
                 }
-                currentLobbyUI=Instantiate(lobbyUI, currentPage.transform);
-                currentLobbyUI.GetComponent<LobbyHandleUI>().UpdateUI(lobbyList[i]);
-                //Ogni UI si controlla e aggiorna da sola, il tasto join viene controllato dalla lobby UI.
+
+                Debug.Log($"Pages: {pages.Count}");
             }
-            
-            Debug.Log($"Pages: {pages.Count}");
+            else
+            {
+                lobbyMissingtext.gameObject.SetActive(true);
+                Debug.Log("No lobby Found");
+            }
         }
-        else
-        {
-            lobbyMissingtext.gameObject.SetActive(true);
-            Debug.Log("No lobby Found");
-        }
+       
+        
+       
         UpdatePageUI();
 
     }
-    private async void GetLobbies()
+    private async Task GetLobbies()
     {
-        lobbyList = await lobbyManager.SearchLobbies();
+        try
+        {
+            lobbyList = await lobbyManager.SearchLobbies();
+        }
+        catch (LobbyServiceException err)
+        {
+            print("error getting lobby list: " + err);
+        }
+        
     }
 
    /// <summary>

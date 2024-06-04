@@ -33,7 +33,7 @@ public class LobbyHandleUI : MonoBehaviour
     {
         myLobby = lobby;
         LobbyNameText.text = myLobby.Name;
-        activePlayerInLobbyText.text = (myLobby.MaxPlayers - myLobby.AvailableSlots).ToString();
+        activePlayerInLobbyText.text =  myLobby.Players.Count.ToString();
         maxPlayerInLobbyText.text = myLobby.MaxPlayers.ToString();
         lobbyID = myLobby.Id;
  
