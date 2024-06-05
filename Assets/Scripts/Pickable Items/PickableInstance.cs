@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,9 +9,10 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PickableInstance : NetworkBehaviour
 {
+    [SerializeField] private TextMeshProUGUI textItemPickUp;
+    private GameObject item;
     private SpriteRenderer spriteRenderer;
-    public GameObject item;
-
+    
     [SerializeField] private float speedSliding;
     /// <summary>
     /// 
@@ -23,7 +25,7 @@ public class PickableInstance : NetworkBehaviour
     //public override void OnNetworkSpawn()
     //{
     //    base.OnNetworkSpawn();
-    //    StartCoroutine(SlideCoroutine());
+    //    GetComponent<Rigidbody2D>().AddForce(Random.insideUnitCircle.normalized * speedSliding);  
     //}
 
     private void Start()
@@ -48,6 +50,7 @@ public class PickableInstance : NetworkBehaviour
     { 
         this.item = item.gameObject;
         spriteRenderer.sprite = sprite;
+        textItemPickUp.text = $"Equip {item.name}";
     }
 
     /// <summary>
@@ -55,9 +58,7 @@ public class PickableInstance : NetworkBehaviour
     /// </summary>
     public virtual void ActivateUI()
     {
-        if (item == null)
-            return;
-        print($"Equip {item.name}");
+        textItemPickUp.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -65,9 +66,7 @@ public class PickableInstance : NetworkBehaviour
     /// </summary>
     public virtual void DeactivateUI()
     {
-        if (item == null)
-            return;
-        print($"Out of {item.name}");
+        textItemPickUp.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) 
