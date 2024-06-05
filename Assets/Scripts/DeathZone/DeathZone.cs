@@ -56,13 +56,10 @@ public class DeathZone : MonoBehaviour
     {
         if (!dictDamageableDamageTick.ContainsKey(damageable))
         {
-            if (!triggerEnter)
-            {
                 PlayerDeathZoneInfo newInfo = new PlayerDeathZoneInfo();
                 newInfo.timeToDamageTick = secondsPerDamageTick;
                 newInfo.isInsideSafeZone = triggerEnter;
                 dictDamageableDamageTick.Add(damageable, newInfo);
-            }
         }
         else
         {

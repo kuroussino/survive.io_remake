@@ -49,6 +49,8 @@ public class Player : NetworkBehaviour, I_Damageable
         }
     }
     #endregion
+
+    #region Input
     private void OnPlayerAimInput(Vector2 vector)
     {
         if (!IsControlledPlayer())
@@ -83,8 +85,19 @@ public class Player : NetworkBehaviour, I_Damageable
 
         movement.OnMovementInput(vector);
     }
+    bool IsControlledPlayer()
+    {
+        bool? isControlled = EventsManager.isOwnerPlayer?.Invoke(this);
+        if (isControlled == null)
+            return false;
+
+        return isControlled.Value;
+    }
+    #endregion
+
     public void TakeDamage(float damageAmount)
     {
+        Debug.Log($"{name} took damage!");
         resources?.TakeDirectDamage(damageAmount);
     }
     public void TryCollectItem(I_Item item)
@@ -96,13 +109,9 @@ public class Player : NetworkBehaviour, I_Damageable
             movement.EquipWeapon(weapon);
         }
     }
-
-    bool IsControlledPlayer()
+    public void Heal(float amount)
     {
-        bool? isControlled = EventsManager.isOwnerPlayer?.Invoke(this);
-        if (isControlled == null)
-            return false;
-
-        return isControlled.Value;
+        resources?.Heal(amount);
     }
+
 }

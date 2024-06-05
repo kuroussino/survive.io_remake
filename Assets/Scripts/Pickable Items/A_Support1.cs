@@ -20,7 +20,7 @@ public abstract class A_Support : MonoBehaviour, I_Item
     /// <param name="other"></param>
     protected void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent(out PlayerResources player))
+        if (!other.TryGetComponent(out Player player))
             return;
         ActivateEffect(player);
     }
@@ -29,7 +29,7 @@ public abstract class A_Support : MonoBehaviour, I_Item
     /// Main effect.
     /// </summary>
     /// <param name="player"></param>
-    protected abstract void ActivateEffect(PlayerResources player);
+    protected abstract void ActivateEffect(Player player);
 
     public Sprite GetSpriteItem()
     {
