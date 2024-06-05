@@ -13,9 +13,7 @@ using Unity.Networking.Transport.Relay;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -140,7 +138,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (myLobby != null)
         {
-            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"last updated lobby {myLobby.LastUpdated}");
+            //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"last updated lobby {myLobby.LastUpdated}");
             //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"host id : {myLobby.HostId}");
             currentTimer += Time.deltaTime;
             currentTimeForConnected += Time.deltaTime;
@@ -166,7 +164,23 @@ public class LobbyManager : MonoBehaviour
                 try
                 {
                     myLobby = await LobbyService.Instance.GetLobbyAsync(myLobby.Id);
-                    
+                    //System.DateTime.Now.ToUniversalTime();
+                    //univDateTime.ToLocalTime();
+                    //DateTime.Parse(deadPlayer.DeathDate_UTC)
+                    var h = System.DateTime.Now - myLobby.LastUpdated;
+                    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"time pass is {h.Seconds}");
+                    if (h.Seconds > hearthTime)
+                    {
+
+                        //foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
+                        //{
+                        //    await KickPlayer(player.Id);
+                        //}
+                        await LeaveLobby();
+
+                        return;
+                    }
+                    //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"System.DateTime.Now.ToUniversalTime();");
                     PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"lobby updated");
                     PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"current host id: {myLobby.HostId}");
 
@@ -253,18 +267,20 @@ public class LobbyManager : MonoBehaviour
                 Data = new Dictionary<string, DataObject>
                 {
                     
-                    { "KEY_START_GAME", new DataObject(DataObject.VisibilityOptions.Member, "null") }
-                }
+                    { "KEY_START_GAME", new DataObject(DataObject.VisibilityOptions.Member, "null") },
+                },
+                
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyFromUI, maxPlayers, createLobbyOptions);
             myLobby = lobby;
-           
+
             print ($"Lobby Created!");
             print($"Lobby Name: {myLobby.Name} - Lobby Max Players: {myLobby.MaxPlayers} Code: {myLobby.LobbyCode}");
             PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"Lobby Created!");
             PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"Lobby Name: {myLobby.Name} - Lobby Max Players: {myLobby.MaxPlayers} Code: {myLobby.LobbyCode}");
             StartCoroutine(LobbyHeartbeat());
             PrintPLayers(myLobby);
+            EventsManager.OnShowLobby?.Invoke(myLobby);
         }
         catch (LobbyServiceException err)
         {
@@ -283,6 +299,7 @@ public class LobbyManager : MonoBehaviour
             Filters = new List<QueryFilter>()
             {
                 new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT)
+                //new QueryFilter(QueryFilter.FieldOptions.LastUpdated, , QueryFilter.OpOptions.LT)
             },
             Order = new List<QueryOrder>
             {
@@ -348,6 +365,7 @@ public class LobbyManager : MonoBehaviour
             await LobbyService.Instance.RemovePlayerAsync(myLobby.Id, AuthenticationService.Instance.PlayerId);
             print($"Player {playerName} leave {myLobby.Name}");
             PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"Player {playerName} leave {myLobby.Name}");
+            myLobby = null;
         }
         catch (LobbyServiceException err)
         {
