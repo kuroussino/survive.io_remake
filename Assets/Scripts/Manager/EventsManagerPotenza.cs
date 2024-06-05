@@ -17,4 +17,6 @@ public static partial class EventsManager
     #endregion
 
     public static Action<Transform> changePlayerCameraTarget;
+
+    public static Func<Player, bool> isOwnerPlayer;
 }
