@@ -4,19 +4,22 @@ using UnityEngine;
 /// <summary>
 /// Behaviour of the Box that drops items. Can be destroyed.
 /// </summary>
-public class LootBox : NetworkBehaviour
+public class LootBox : NetworkBehaviour, I_Damageable
 {
     [SerializeField] PickableInstance pickable;   
-    [SerializeField] private int maxRangeItems;   
+    [SerializeField] private int maxRangeItems;
+
+    public bool PermanentlyImmuneToDeathZone => true;
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
     }
 
-    public void TakeDamage()
+    public void TakeDamage(float damageAmount)
     {
-        int maxItems = Random.Range(1, maxRangeItems+1);
-        for(int i = 0; i < maxItems; i++)
+        int maxItems = Random.Range(1, maxRangeItems + 1);
+        for (int i = 0; i < maxItems; i++)
         {
             PickableInstance pick = Instantiate(pickable, transform.position, transform.rotation);
             var wep = ItemGetter.Instance.GetRandomItem();
