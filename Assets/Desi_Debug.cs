@@ -3,18 +3,34 @@ using UnityEngine;
 public class Desi_Debug : MonoBehaviour
 {
     [SerializeField] A_Weapon weapon;
-    [SerializeField] PickableInstance pickablePrefab;
+    [SerializeField] LootBox itembox;
 
     private PickableInstance pick;
+    PickableInstance[] pickablePrefab;
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKey(KeyCode.Mouse0))
         {
-            weapon.Shoot();
-            //pick = Instantiate(pickablePrefab, transform.position, Quaternion.identity);
-            //pick.SetPrefabToSpawn(weapon);
+            pickablePrefab = FindObjectsOfType<PickableInstance>();
+            if (pickablePrefab != null)
+                foreach(var pre in pickablePrefab)
+                {
+                    pre.ActivateUI();
+                }
+        }
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            if (pickablePrefab != null)
+                foreach (var pre in pickablePrefab)
+                {
+                    pre.DeactivateUI();
+                }
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            itembox.TakeDamage();
         }
     }
 }
