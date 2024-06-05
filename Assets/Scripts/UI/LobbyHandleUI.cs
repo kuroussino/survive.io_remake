@@ -14,6 +14,7 @@ public class LobbyHandleUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI maxPlayerInLobbyText;
     [SerializeField] Button joinButton;
     Lobby myLobby;
+    string lobbyID;
     #endregion
 
     #region Mono
@@ -24,20 +25,18 @@ public class LobbyHandleUI : MonoBehaviour
     #endregion
 
     #region Methods
+
     /// <summary>
     /// Updating UI based on lobby data
     /// </summary>
     /// <param name="lobby"></param>
-    public void UpdateUI(FakeLobbies lobby)
+    public void UpdateUI(Lobby lobby)
     {
-        //LobbyNameText.text = lobby.Name;
-        //activePlayerInLobbyText.text = (lobby.MaxPlayers - lobby.AvailableSlots).ToString();
-        //maxPlayerInLobbyText.text = lobby.MaxPlayers.ToString();
-        LobbyNameText.text = lobby.LobbyName;
-        activePlayerInLobbyText.text = lobby.currentPlayer.ToString();
-        maxPlayerInLobbyText.text = lobby.maxPlayer.ToString();
-        //lobbyID=lobbby.id;
-        //myLobby=lobby;
+        myLobby = lobby;
+        LobbyNameText.text = myLobby.Name;
+        activePlayerInLobbyText.text =  myLobby.Players.Count.ToString();
+        maxPlayerInLobbyText.text = myLobby.MaxPlayers.ToString();
+        lobbyID = myLobby.Id;
     }
 
     /// <summary>
@@ -46,7 +45,7 @@ public class LobbyHandleUI : MonoBehaviour
     public void joinLobbywithID()
     {
         Debug.Log($"Entering lobby by ID {LobbyNameText.text}");
-        //EventsManager.OnClientJoinLobbyWithID?.Invoke(myLobby);
+        EventsManager.OnClientJoinLobbyWithID?.Invoke(myLobby);
     }
     #endregion
 }
