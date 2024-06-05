@@ -4,26 +4,28 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 /// <summary>
-/// Enter your class explanation here
+/// Returns an <c>I_Item</c> object requested by other Classes.
+/// <para> It can be a <c>A_Weapon</c> or a <c>A_Support</c></para>
 /// </summary>
 public class ItemGetter: Singleton<ItemGetter>
 {
-
     #region Variables & Properties
 
-    [SerializeField] List<GameObject> weaponList;
-    [SerializeField] List<GameObject> suppportList;
-    [SerializeField] List<ItemReference> itemReferences;
+    [SerializeField] List<A_Weapon> weaponList;
+    [SerializeField] List<A_Support> suppportList;
+
 
     #endregion
 
     #region Custom Methods
 
-    public I_Item GetItem()
-    {
-        return itemReferences[0].value;
-    }
-    public GameObject GetWeapon<T>(T weapon) where T : A_Weapon
+    /// <summary>
+    ///  Returns a specified <paramref name"weapon"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="weapon"></param>
+    /// <returns></returns>
+    public A_Weapon GetWeapon<T>(T weapon) where T : A_Weapon
     {
         foreach(var wep in weaponList)
         {
@@ -32,10 +34,16 @@ public class ItemGetter: Singleton<ItemGetter>
         }
         return null;
     }
-
-    public GameObject GetSupport<T>(T support) where T : A_Support
+ 
+    /// <summary>
+    /// Returns a specified <paramref name"support"/> item.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="support"></param>
+    /// <returns></returns>
+    public A_Support GetSupport<T>(T support) where T : A_Support
     {
-        foreach (var sup in weaponList)
+        foreach (var sup in suppportList)
         {
             if (support.GetType() == typeof(T))
                 return sup;
@@ -43,21 +51,33 @@ public class ItemGetter: Singleton<ItemGetter>
         return null;
     }
 
-    public GameObject GetRandomWeapon()
+    /// <summary>
+    /// Returns a random item from the <c>A_Weapon</c> Collection.
+    /// </summary>
+    /// <returns></returns>
+    public A_Weapon GetRandomWeapon()
     {
         int indexRandom = Random.Range(0, weaponList.Count);
         return weaponList[indexRandom];
     }
 
-    public GameObject GetSupportRandom()
+    /// <summary>
+    /// Returns a random item from the <c>A_Support</c> Collection.
+    /// </summary>
+    /// <returns></returns>
+    public A_Support GetSupportRandom()
     {
         int indexRandom = Random.Range(0, suppportList.Count);
         return suppportList[indexRandom];
     }
 
-    public GameObject GetRandomItem()
+    /// <summary>
+    /// Returns a random item from the <c>A_Weapon</c> and <c>A_Support</c> Collections
+    /// </summary>
+    /// <returns></returns>
+    public I_Item GetRandomItem()
     {
-        List<GameObject> allItemsList = weaponList;
+        List<I_Item> allItemsList = new List<I_Item>(weaponList);
         allItemsList.AddRange(suppportList);
         return allItemsList[Random.Range(0, allItemsList.Count)];
     }

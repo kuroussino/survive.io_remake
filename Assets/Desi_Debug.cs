@@ -28,9 +28,9 @@ public class Desi_Debug : MonoBehaviour
                     pre.DeactivateUI();
                 }
         }
-        if (Input.GetKeyDown(KeyCode.V))
+        if(itembox != null)
         {
-            itembox.TakeDamage(1);
+            itembox.TakeDamage(20);
         }
     }
 }
