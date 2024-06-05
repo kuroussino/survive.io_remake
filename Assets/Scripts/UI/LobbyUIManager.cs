@@ -1,25 +1,37 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Netcode;
+using Unity.Services.Core;
 using Unity.Services.Lobbies.Models;
 using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(LobbyManager))]
 public class LobbyUIManager : MonoBehaviour
 {
     #region Variables
 
-    [Header("UI lobby var")]
+    [Space(10)]
+    [Header("UI lobby searching var")]
     [SerializeField] TMP_InputField lobbyNameInputField;
     [SerializeField] GameObject lobbyUI;
     [SerializeField] GameObject PageUI;
     [SerializeField] GameObject PageContainerUI;
+    [SerializeField] GameObject LobbySearchOrCreateUI;
     [SerializeField] TextMeshProUGUI lobbyMissingtext;
     [SerializeField] TextMeshProUGUI pagesCountText;
     [SerializeField] TextMeshProUGUI nameMissingText;
+
+    [Space(10)]
+    [Header("UI lobby hub var")]
+    [SerializeField] GameObject lobbyHubUI;
+    [SerializeField] GameObject playerLobbyUI;
+    [SerializeField] GameObject verticalLobbyLayoutUI;
 
     [Space(10)]
     [Header("Lobby Manager")]
@@ -28,15 +40,16 @@ public class LobbyUIManager : MonoBehaviour
     [Space(10)]
     [Header("Variables")]
     List<Lobby> lobbyList= new List<Lobby>();
-    //List<FakeLobbies> fakeLobbyList=new List<FakeLobbies>();
     List<GameObject> pages = new List<GameObject>();
     List<GameObject> pagesToDestroy = new List<GameObject>();
-
+    List<LobbyPlayerUI> playerShowedInUIList=new List<LobbyPlayerUI>();
     GameObject currentPage;
     GameObject currentLobbyUI;
     int currentPageNumber = 0;
     string lobbyName;
-    [SerializeField] int numberOfFakeLobbiesWanted;
+    bool isWaiting;
+    //List<FakeLobbies> fakeLobbyList=new List<FakeLobbies>();
+    //[SerializeField] int numberOfFakeLobbiesWanted;
     #endregion
 
     #region Mono
@@ -44,11 +57,17 @@ public class LobbyUIManager : MonoBehaviour
     private void OnEnable()
     {
         EventsManager.LobbyReady += LobbyReadyEvent;
+        EventsManager.OnShowLobby += OnShowingLobby;
+        EventsManager.OnQuittedLobby += OnQuitPlayer;
+        EventsManager.OnJoinedLobby += OnJoinPlayer;
     }
 
     private void OnDisable()
     {
         EventsManager.LobbyReady -= LobbyReadyEvent;
+        EventsManager.OnShowLobby -= OnShowingLobby;
+        EventsManager.OnQuittedLobby -= OnQuitPlayer;
+        EventsManager.OnJoinedLobby -= OnJoinPlayer;
     }
 
     private void LobbyReadyEvent()
@@ -62,7 +81,8 @@ public class LobbyUIManager : MonoBehaviour
     }
     private void Start()
     {
-        //RefreshLobbyList();
+        LobbySearchOrCreateUI.SetActive(true);
+        lobbyHubUI.SetActive(false);
     }
     #endregion
     #region LobbyList
@@ -119,21 +139,6 @@ public class LobbyUIManager : MonoBehaviour
     {
         lobbyList = await lobbyManager.SearchLobbies();
     }
-
-   /// <summary>
-   /// Get a list of fake lobbies containing name, max players and current players. Method needed as testing purpose only
-   /// </summary>
-   /// <returns></returns>
-    //private List<FakeLobbies> GetFakeLobbyList()
-    //{
-    //    List<FakeLobbies> lobbyList = new List<FakeLobbies>(); 
-    //    for(int i = 1; i <= numberOfFakeLobbiesWanted; i++)
-    //    {
-    //        FakeLobbies lobby = new FakeLobbies($"Lobby {i}", 6, Random.Range(0,7)); // Example: each lobby has max 10 players and starts with 0 current players
-    //        lobbyList.Add(lobby);
-    //    }
-    //    return lobbyList;
-    //}
 
     /// <summary>
     /// Destroy the old pages of the Lobby List UI in order to create new ones.
@@ -198,6 +203,10 @@ public class LobbyUIManager : MonoBehaviour
     #endregion
 
     #region OnHost
+
+    /// <summary>
+    /// Method Called when hosting a game from the UI 
+    /// </summary>
     public void OnHost()
     {
         if (lobbyNameInputField.text != "")
@@ -210,32 +219,106 @@ public class LobbyUIManager : MonoBehaviour
             StartCoroutine(HandleMissingNameText());
         }
     }
+
+    /// <summary>
+    /// Missing Text appearing for a shor amount of time and disappearing again only when the name of the lobby is equal to ""
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator HandleMissingNameText()
     {
-        nameMissingText.text = "Name is missing or invalid";
-        nameMissingText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        nameMissingText.gameObject.SetActive(false);
+        if (!isWaiting)
+        {
+            nameMissingText.text = "Name is missing or invalid";
+            isWaiting = true;
+            nameMissingText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(2f);
+            nameMissingText.gameObject.SetActive(false);
+            isWaiting = false;
+        }
+
     }
     #endregion
+
+    #region OnLobbyCreatedOrJoined
+
+    /// <summary>
+    /// Called throught event when the lobby is up and created, it will shows the UI of the lobbyHub with a list of players connected
+    /// </summary>
+    /// <param name="lobby"></param>
+    private void OnShowingLobby(Lobby lobby)
+    {
+        lobbyHubUI.SetActive(true);
+        LobbySearchOrCreateUI.SetActive(false);
+        GameObject playerUI;
+        for (int i = 0; i < lobby.Players.Count; i++)
+        {
+            playerUI=Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
+            playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(lobby.Players[i]);
+            playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
+        }
+    }
+
+    /// <summary>
+    /// Called when player is quitting the lobby when the lobby is already up
+    /// </summary>
+    /// <param name="player"></param>
+    private void OnQuitPlayer(Unity.Services.Lobbies.Models.Player player)
+    {
+       for(int i = 0; i < playerShowedInUIList.Count; i++)
+       {
+            if (playerShowedInUIList[i].playerID == player.Id)
+            {
+                playerShowedInUIList[i].RemovePlayer();
+                return;
+            }
+       }
+    }
+
+    /// <summary>
+    /// Called when the player is joining a lobby that is already up 
+    /// </summary>
+    /// <param name="player"></param>
+    private void OnJoinPlayer(Unity.Services.Lobbies.Models.Player player)
+    {
+        GameObject playerUI;
+        playerUI = Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
+        playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player);
+        playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
+    }
+    #endregion
+
+    /// <summary>
+    /// Get a list of fake lobbies containing name, max players and current players. Method needed as testing purpose only
+    /// </summary>
+    /// <returns></returns>
+    //private List<FakeLobbies> GetFakeLobbyList()
+    //{
+    //    List<FakeLobbies> lobbyList = new List<FakeLobbies>(); 
+    //    for(int i = 1; i <= numberOfFakeLobbiesWanted; i++)
+    //    {
+    //        FakeLobbies lobby = new FakeLobbies($"Lobby {i}", 6, Random.Range(0,7)); // Example: each lobby has max 10 players and starts with 0 current players
+    //        lobbyList.Add(lobby);
+    //    }
+    //    return lobbyList;
+    //}
 }
 
 
-    //#region struct lobbies
-    ///// <summary>
-    ///// Fake lobbies struct, needed for testing purpose only.
-    ///// </summary>
-    ///// 
-    //public struct FakeLobbies
-    //{
-    //   public string LobbyName;
-    //   public int maxPlayer;
-    //   public int currentPlayer;
-    //   public FakeLobbies(string Name,int maxPlayer,int currentPlayer)
-    //  {
-    //      LobbyName = Name;
-    //      this.maxPlayer = maxPlayer;
-    //      this.currentPlayer = currentPlayer;
-    //  }
-    //}
-    //#endregion
+//#region struct lobbies
+///// <summary>
+///// Fake lobbies struct, needed for testing purpose only.
+///// </summary>
+///// 
+//public struct FakeLobbies
+//{
+//   public string LobbyName;
+//   public int maxPlayer;
+//   public int currentPlayer;
+//   public FakeLobbies(string Name,int maxPlayer,int currentPlayer)
+//  {
+//      LobbyName = Name;
+//      this.maxPlayer = maxPlayer;
+//      this.currentPlayer = currentPlayer;
+//  }
+//}
+//#endregion

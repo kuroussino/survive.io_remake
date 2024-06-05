@@ -25,6 +25,7 @@ public class LobbyHandleUI : MonoBehaviour
     #endregion
 
     #region Methods
+
     /// <summary>
     /// Updating UI based on lobby data
     /// </summary>
@@ -36,7 +37,6 @@ public class LobbyHandleUI : MonoBehaviour
         activePlayerInLobbyText.text = (myLobby.MaxPlayers - myLobby.AvailableSlots).ToString();
         maxPlayerInLobbyText.text = myLobby.MaxPlayers.ToString();
         lobbyID = myLobby.Id;
- 
     }
 
     /// <summary>
