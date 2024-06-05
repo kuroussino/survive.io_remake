@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         weapon.transform.rotation = playerSprites.rotation;
         firstHand.position = firstHandMainPosition.position;
         weapon.transform.position = firstHand.position;
-        secondHand.position = weapon.GetSecondHandPosition().position;
+        secondHand.position = secondHandMainPosition.position;
     }
     void ResetHandsPosition()
     {
