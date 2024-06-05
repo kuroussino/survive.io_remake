@@ -22,7 +22,7 @@ public class InputManager : MonoBehaviour
     }
     public void OnCameraSwitchInput(CallbackContext context)
     {
-        if (!context.performed)
+        if (!TapAndReleaseBool(context))
             return;
 
         EventsManager.cameraSwitchInput?.Invoke();
@@ -35,7 +35,7 @@ public class InputManager : MonoBehaviour
     //Returns true if the context is performed. Returns false if the context is canceled
     bool TapAndReleaseBool(CallbackContext context)
     {
-        if (context.performed)
+        if (context.started)
             return true;
 
         if (context.canceled)

@@ -16,13 +16,11 @@ public class BulletBehaviour : MonoBehaviour
     /// <summary>
     /// Method that triggers when it hits something, damaging the player or destroying itself
     /// </summary>
-    /// <param name="collision"></param>
-    private void OnCollisionEnter2D(Collision2D collision)
+    /// <param name="collision"></param> 
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent(out I_Damageable enemy))
             enemy.TakeDamage(damage);
-        if(!collision.gameObject.TryGetComponent(out BulletBehaviour bullet))
-            Destroy(gameObject);
     }
 
     /// <summary>

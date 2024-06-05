@@ -38,10 +38,9 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     [SerializeField] protected AudioClip reloadSound;
     [Tooltip("Sound used when the weapon is out of bullets and it's still trying to shoot.")]
     [SerializeField] protected AudioClip outOfBulletsSound;
-
+    [Tooltip("Sprite of the weapon that appears on the player.")]
     [SerializeField] protected Sprite weaponSprite;
-
-
+    [Tooltip("Instance of the weapon when it is dropped.")]
     [SerializeField] protected GameObject pickableInstance;
 
 
@@ -72,7 +71,7 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     }
 
     /// <summary>
-    /// 
+    /// Validates data inserted in the Instance of the weapon on the Inspector
     /// </summary>
     private void OnValidate()
     {
@@ -113,7 +112,7 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
 
     /// <summary>
     /// Reload method. It has a base implementation for reloading with reloadTime, but it's open for any further implementation.
-    /// Should be used by other classes to call the reload
+    /// Should be used by other classes to call the Reload
     /// </summary>
     public virtual void Reload()
     {
@@ -176,15 +175,15 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     }
 
     /// <summary>
-    /// 
+    /// Make Pickable Instance spawn with the data of the this weapon.
     /// </summary>
     private void DropWeapon()
     {
-        GameObject weapon = ItemGetter.Instance.GetWeapon(this);
+        A_Weapon weapon = ItemGetter.Instance.GetWeapon(this);
         if(weapon != null)
         {
             PickableInstance pickable = Instantiate(pickableInstance, transform.position, transform.rotation).GetComponent<PickableInstance>();
-            pickable.SetPrefabToSpawn(weapon, weaponSprite);
+            pickable.SetPrefabToSpawn(weapon.gameObject, weaponSprite);
         }
     }
 
