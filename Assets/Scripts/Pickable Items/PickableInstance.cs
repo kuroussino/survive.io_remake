@@ -10,7 +10,7 @@ using UnityEngine;
 public class PickableInstance : NetworkBehaviour
 {
     [SerializeField] private TextMeshProUGUI textItemPickUp;
-    private GameObject item;
+    private GameObject prefabItem;
     private SpriteRenderer spriteRenderer;
     
     [SerializeField] private float speedSliding;
@@ -47,14 +47,14 @@ public class PickableInstance : NetworkBehaviour
     /// </summary>
     /// <param name="item"></param>
     public void SetPrefabToSpawn(GameObject item, Sprite sprite)
-    { 
-        this.item = item.gameObject;
+    {
+        prefabItem = item;
         spriteRenderer.sprite = sprite;
         textItemPickUp.text = $"Equip {item.name}";
     }
 
     /// <summary>
-    /// <remarks>REMEMBER TO CHECK IF ITEM IS NULL!</remarks>
+    /// <remarks>Public method that needs to be used when the item ist near the player to activate UI.</remarks>
     /// </summary>
     public virtual void ActivateUI()
     {
@@ -62,7 +62,7 @@ public class PickableInstance : NetworkBehaviour
     }
 
     /// <summary>
-    /// <remarks>REMEMBER TO CHECK IF ITEM IS NULL!</remarks>
+    /// <remarks>Public method that needs to be used when the item isn't near the player anymore and needs to deactivate UI.</remarks>
     /// </summary>
     public virtual void DeactivateUI()
     {

@@ -21,9 +21,13 @@ public class LootBox : NetworkBehaviour, I_Damageable
         int maxItems = Random.Range(1, maxRangeItems + 1);
         for (int i = 0; i < maxItems; i++)
         {
+            var item = ItemGetter.Instance.GetRandomItem();
+            var weapon = item as A_Weapon;
+            var support = item as A_Support;
+            if (weapon == null && support == null)
+                continue;
             PickableInstance pick = Instantiate(pickable, transform.position, transform.rotation);
-            var wep = ItemGetter.Instance.GetRandomItem();
-            pick.SetPrefabToSpawn(wep, wep.GetComponent<I_Item>().GetSpriteItem());
+            pick.SetPrefabToSpawn(weapon ? ((A_Weapon)item).gameObject : ((A_Support)item).gameObject, item.GetSpriteItem());
         }
         Destroy(gameObject);
     }
