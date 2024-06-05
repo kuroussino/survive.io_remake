@@ -13,8 +13,6 @@ public class ItemGetter: Singleton<ItemGetter>
 
     [SerializeField] List<A_Weapon> weaponList;
     [SerializeField] List<A_Support> suppportList;
-
-
     #endregion
 
     #region Custom Methods

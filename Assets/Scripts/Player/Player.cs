@@ -100,14 +100,19 @@ public class Player : NetworkBehaviour, I_Damageable
         Debug.Log($"{name} took damage!");
         resources?.TakeDirectDamage(damageAmount);
     }
-    public void TryCollectItem(I_Item item)
+    public bool TryCollectItem(I_Item item)
     {
         inventory.TryGetItem(item, out EquipmentData equipmentData);
         if(equipmentData.weapon != null)
         {
-            A_Weapon weapon = equipmentData.weapon;
+            A_Weapon weapon = Instantiate(equipmentData.weapon);
+            var instanceNetworkObject = weapon.GetComponent<NetworkObject>();
+            instanceNetworkObject.Spawn();
             movement.EquipWeapon(weapon);
+            return true;
         }
+
+        return false;
     }
     public void Heal(float amount)
     {
