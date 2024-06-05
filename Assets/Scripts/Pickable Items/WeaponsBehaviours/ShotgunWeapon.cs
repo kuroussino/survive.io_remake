@@ -10,6 +10,7 @@ public sealed class ShotgunWeapon : A_Weapon
 {
     [Space(6)]
     [Header("Shotgun Variables")]
+    [Space(4)]
     [Tooltip("The number of bullets the shotgun uses everytime it shoots")]
     [SerializeField] private int numberOfBulletsPerShoot;
     [Tooltip("A random angle number that makes the bullets spread randomly under a certain range")]
@@ -22,7 +23,6 @@ public sealed class ShotgunWeapon : A_Weapon
             bullet.SetDataBulletFromWeapon(damage, bulletSpeed, range, bulletSprite);
             Debug.Log("Shoot");
         }
-        ShootingCooldown(cooldownShotsTime);
         currentNumberAmmoMagazine -= numberOfBulletsPerShoot;
         EventsManager.WeaponUpdateBullets?.Invoke(currentNumberAmmoMagazine);
     }
