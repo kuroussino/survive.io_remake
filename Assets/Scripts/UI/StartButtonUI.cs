@@ -19,10 +19,18 @@ public class StartButtonUI : MonoBehaviour
     #region Methods
     private void OnStartButtonClick()
     {
-        if (NetworkManager.Singleton.IsHost)
+        if (NetworkManager.Singleton!=null)
         {
-            EventsManager.OnHostStartGame?.Invoke();
+            if (NetworkManager.Singleton.IsHost)
+            {
+                EventsManager.OnHostStartGame?.Invoke();
+            }
         }
+        else
+        {
+            Debug.Log("Network Manager is null find another way to get the host of the game");
+        }
+
     }
     #endregion
 }

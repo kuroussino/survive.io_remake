@@ -21,14 +21,23 @@ public class LobbyPlayerUI : MonoBehaviour
     {
         playerID = player.Id;
         PlayerNameText.text = player.Data["PlayerName"].Value.ToString();
-        if (NetworkManager.Singleton.IsHost)
+        if (NetworkManager.Singleton != null)
         {
-            HostOrClientText.text = "HOST";
+            if (NetworkManager.Singleton.IsHost)
+            {
+                HostOrClientText.text = "HOST";
+            }
+            else
+            {
+                HostOrClientText.text = "CLIENT";
+            }
         }
         else
         {
-            HostOrClientText.text = "CLIENT";
+            Debug.Log("Network manager is not found try another way to get the host of the lobby, the text will be set to null ");
+            HostOrClientText.text = "";
         }
+
     }
     public void RemovePlayer()
     {
