@@ -9,7 +9,7 @@ public class PlayerSwitcher : MonoBehaviour
     Player[] players;
     int playersIndex;
     Player CurrentPlayer => players[playersIndex];
-    private void Start()
+    private void Awake()
     {
         players = FindObjectsOfType<Player>();
     }
@@ -31,10 +31,6 @@ public class PlayerSwitcher : MonoBehaviour
     {
         EventsManager.isOwnerPlayer -= OnIsOwnerPlayer;
         EventsManager.cameraSwitchInput -= OnCameraSwitchInput;
-    }
-    private void OnPlayerSwitchCameraTargetInput()
-    {
-        OnCameraSwitchInput();
     }
     private bool OnIsOwnerPlayer(Player player)
     {
