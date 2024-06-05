@@ -23,6 +23,12 @@ public class LootBox : NetworkBehaviour, I_Damageable
         {
             PickableInstance pick = Instantiate(pickable, transform.position, transform.rotation);
             var wep = ItemGetter.Instance.GetRandomItem();
+            if(wep == null)
+            {
+                Debug.Log("No item");
+                Destroy(gameObject);
+                return;
+            }
             pick.SetPrefabToSpawn(wep, wep.GetComponent<I_Item>().GetSpriteItem());
         }
         Destroy(gameObject);

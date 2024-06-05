@@ -13,12 +13,16 @@ public class ItemGetter: Singleton<ItemGetter>
 
     [SerializeField] List<GameObject> weaponList;
     [SerializeField] List<GameObject> suppportList;
-
+    [SerializeField] List<ItemReference> itemReferences;
 
     #endregion
 
     #region Custom Methods
 
+    public I_Item GetItem()
+    {
+        return itemReferences[0].value;
+    }
     public GameObject GetWeapon<T>(T weapon) where T : A_Weapon
     {
         foreach(var wep in weaponList)

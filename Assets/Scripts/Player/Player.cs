@@ -84,6 +84,11 @@ public class Player : NetworkBehaviour, I_Damageable
             return;
 
         movement.OnMovementInput(vector);
+        I_Item item = ItemGetter.Instance.GetItem();
+        if (item == null)
+            Debug.Log("Nothing");
+        else
+            Debug.Log($"{item.GetSpriteItem().name} is the image");
     }
     bool IsControlledPlayer()
     {

@@ -30,7 +30,7 @@ public class Desi_Debug : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.V))
         {
-            itembox.TakeDamage();
+            itembox.TakeDamage(1);
         }
     }
 }

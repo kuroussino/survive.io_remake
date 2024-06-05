@@ -21,8 +21,6 @@ public class BulletBehaviour : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out I_Damageable enemy))
             enemy.TakeDamage(damage);
-        if (!collision.gameObject.TryGetComponent(out BulletBehaviour bullet))
-            Destroy(gameObject);
     }
 
     /// <summary>
