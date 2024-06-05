@@ -2029,8 +2029,8 @@ MonoBehaviour:
   minimumPlayersForStart: 2
   timeUpdate: 1.5
   hearthTime: 25
-  checkConnectedTimer: 10
-  confirmedConnectedTimer: 2
+  checkConnectedTimer: 15
+  confirmedConnectedTimer: 5
   playerPrefab: {fileID: 7700427343961830476, guid: d014ef902dd76a04c88b0a98096378b8, type: 3}
 --- !u!1 &884588929
 GameObject:
