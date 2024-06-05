@@ -4,6 +4,7 @@ public class Desi_Debug : MonoBehaviour
 {
     [SerializeField] A_Weapon weapon;
     [SerializeField] PickableInstance pickablePrefab;
+    [SerializeField] LootBox itembox;
 
     private PickableInstance pick;
 
@@ -15,6 +16,10 @@ public class Desi_Debug : MonoBehaviour
             weapon.Shoot();
             //pick = Instantiate(pickablePrefab, transform.position, Quaternion.identity);
             //pick.SetPrefabToSpawn(weapon);
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            itembox.TakeDamage();
         }
     }
 }

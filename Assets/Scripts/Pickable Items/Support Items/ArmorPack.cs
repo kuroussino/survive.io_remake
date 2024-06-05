@@ -2,13 +2,10 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Class that inherits from <c>A_Support</c>. Serves as as a heal for Player's health.
+/// Class that inherits from <c>A_Support</c>. Serves as armor for Player's armor.
 /// </summary>
-public sealed class HealthPack : A_Support
+public sealed class ArmorPack : A_Support
 {
-    [Tooltip("The amount of health the item heals.")]
-    [SerializeField] private float amountHealthHealed;
-
     /// <summary>
     /// Choose which effect to activate based on <paramref name="isEquippable"/> variable.
     /// </summary>
@@ -28,7 +25,7 @@ public sealed class HealthPack : A_Support
     /// <param name="player"></param>
     private void InstantEffect(PlayerResources player)
     {
-        player.Heal(amountHealthHealed);
+        throw new NotImplementedException();
     }
 
 
