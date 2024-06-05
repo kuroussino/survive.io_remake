@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: TreesMask
+    uniqueID: 1390014255
+    locked: 0
+  - name: DeathZone
+    uniqueID: 4176982661
+    locked: 0
