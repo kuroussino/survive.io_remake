@@ -253,7 +253,7 @@ public class LobbyManager : MonoBehaviour
 
     private void OnLobbyChanged(ILobbyChanges changes)
     {
-        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"a player left game :D");
+        //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"a player left game :D");
     }
 
     public async Task<List<Lobby>> SearchLobbies()
@@ -348,7 +348,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void LeaveLobby()
+    public async Task LeaveLobby()
     {
         try
         {
@@ -439,7 +439,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private void CloseLobby()
+    private async void CloseLobby()
     {
         foreach(Unity.Services.Lobbies.Models.Player player in myLobby.Players)
         {
@@ -449,8 +449,9 @@ public class LobbyManager : MonoBehaviour
             }
             
         }
-        LeaveLobby();
+        await LeaveLobby();
         PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"Lobby close with no errors");
+        Destroy(this.gameObject);
     }
 
 
