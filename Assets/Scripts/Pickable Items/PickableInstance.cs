@@ -1,14 +1,19 @@
+using System.Collections;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
 /// 
 /// </summary>
 [RequireComponent(typeof(SpriteRenderer))]
-public class PickableInstance : MonoBehaviour
+public class PickableInstance : NetworkBehaviour
 {
+    [SerializeField] private TextMeshProUGUI textItemPickUp;
+    private GameObject item;
     private SpriteRenderer spriteRenderer;
-    public I_Item item;
-
+    
+    [SerializeField] private float speedSliding;
     /// <summary>
     /// 
     /// </summary>
@@ -17,8 +22,19 @@ public class PickableInstance : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    //public override void OnNetworkSpawn()
+    //{
+    //    base.OnNetworkSpawn();
+    //    GetComponent<Rigidbody2D>().AddForce(Random.insideUnitCircle.normalized * speedSliding);  
+    //}
+
+    private void Start()
+    {
+        GetComponent<Rigidbody2D>().AddForce(Random.insideUnitCircle.normalized * speedSliding);
+    }
+
     /// <summary>
-    /// Input with PlayerInventory
+    /// Should be calling the implementation of a method of the I_Item interface, because every item must know how to behave when equipped.
     /// </summary>
     public void GetItem() 
     {
@@ -30,9 +46,11 @@ public class PickableInstance : MonoBehaviour
     /// 
     /// </summary>
     /// <param name="item"></param>
-    public void SetPrefabToSpawn(I_Item item)
-    {
-        this.item = item;
+    public void SetPrefabToSpawn(GameObject item, Sprite sprite)
+    { 
+        this.item = item.gameObject;
+        spriteRenderer.sprite = sprite;
+        textItemPickUp.text = $"Equip {item.name}";
     }
 
     /// <summary>
@@ -40,12 +58,7 @@ public class PickableInstance : MonoBehaviour
     /// </summary>
     public virtual void ActivateUI()
     {
-        if (item == null)
-            return;
-        var go = item as MonoBehaviour;
-        if (go == null)
-            return;
-        print($"Equip {go.name}");
+        textItemPickUp.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -53,12 +66,7 @@ public class PickableInstance : MonoBehaviour
     /// </summary>
     public virtual void DeactivateUI()
     {
-        if (item == null)
-            return;
-        var go = item as MonoBehaviour;
-        if (go == null)
-            return;
-        print($"Out of {go.name}");
+        textItemPickUp.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) 

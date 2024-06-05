@@ -38,8 +38,12 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     [SerializeField] protected AudioClip reloadSound;
     [Tooltip("Sound used when the weapon is out of bullets and it's still trying to shoot.")]
     [SerializeField] protected AudioClip outOfBulletsSound;
-    [Tooltip("Position of the second hand")]
-    [SerializeField] protected Transform secondHandPosition;
+
+    [SerializeField] protected Sprite weaponSprite;
+
+
+    [SerializeField] protected GameObject pickableInstance;
+
 
     /// <summary>
     /// 
@@ -101,6 +105,7 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
             return;
         }
         ShootEffect();
+        ShootingCooldown(cooldownShotsTime);
         if (!holdForAutoFire)
             alreadyShooted = true;
     }
@@ -147,11 +152,9 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
 
     /// <summary>
     /// Method that uses the ShootingCooldownCoroutine for stopping the weapon from shooting
-    /// <para>P.S. Should this be hidden from implementations and only called in the Reload Method?
-    /// Probably not because of the Shot Burst Cooldown.</para>
     /// </summary>
     /// <param name="time"></param>
-    protected void ShootingCooldown(float time)
+    private void ShootingCooldown(float time)
     {
         StopCoroutine("StopShootingCooldownCoroutine");
         StartCoroutine(ShootingCooldownCoroutine(time));
@@ -173,13 +176,21 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     }
 
     /// <summary>
-    /// Returns the position where the second hand of the player should be to look like he is wielding the weapon
+    /// 
     /// </summary>
-    /// <returns>
-    /// </returns>
-    public Transform GetSecondHandPosition()
+    private void DropWeapon()
     {
-        return secondHandPosition;
+        GameObject weapon = ItemGetter.Instance.GetWeapon(this);
+        if(weapon != null)
+        {
+            PickableInstance pickable = Instantiate(pickableInstance, transform.position, transform.rotation).GetComponent<PickableInstance>();
+            pickable.SetPrefabToSpawn(weapon, weaponSprite);
+        }
+    }
+
+    public Sprite GetSpriteItem()
+    {
+        return weaponSprite;
     }
 
     #endregion
