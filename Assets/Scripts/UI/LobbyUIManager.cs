@@ -1,6 +1,7 @@
 using CI.PowerConsole;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Services.Lobbies;
@@ -13,6 +14,13 @@ public class LobbyUIManager : MonoBehaviour
     #region Variables
 
     [Space(10)]
+    [Header("UI login var")]
+    [SerializeField] TMP_InputField playerNameField;
+    [SerializeField] GameObject loginUI;
+    [SerializeField] TextMeshProUGUI missingPlayerNameText;
+
+
+    [Space(10)]
     [Header("UI lobby searching var")]
     [SerializeField] TMP_InputField lobbyNameInputField;
     [SerializeField] GameObject lobbyUI;
@@ -21,13 +29,15 @@ public class LobbyUIManager : MonoBehaviour
     [SerializeField] GameObject LobbySearchOrCreateUI;
     [SerializeField] TextMeshProUGUI lobbyMissingtext;
     [SerializeField] TextMeshProUGUI pagesCountText;
-    [SerializeField] TextMeshProUGUI nameMissingText;
+    [SerializeField] TextMeshProUGUI lobbyNameMissingText;
 
     [Space(10)]
     [Header("UI lobby hub var")]
     [SerializeField] GameObject lobbyHubUI;
     [SerializeField] GameObject playerLobbyUI;
     [SerializeField] GameObject verticalLobbyLayoutUI;
+
+   
 
     [Space(10)]
     [Header("Lobby Manager")]
@@ -44,8 +54,6 @@ public class LobbyUIManager : MonoBehaviour
     int currentPageNumber = 0;
     string lobbyName;
     bool isWaiting;
-    //List<FakeLobbies> fakeLobbyList=new List<FakeLobbies>();
-    //[SerializeField] int numberOfFakeLobbiesWanted;
     #endregion
 
     #region Mono
@@ -66,10 +74,7 @@ public class LobbyUIManager : MonoBehaviour
         EventsManager.OnJoinedLobby -= OnJoinPlayer;
     }
 
-    private void LobbyReadyEvent()
-    {
-        RefreshLobbyList();
-    }
+
 
     private void Awake()
     {
@@ -77,12 +82,39 @@ public class LobbyUIManager : MonoBehaviour
     }
     private void Start()
     {
-        LobbySearchOrCreateUI.SetActive(true);
+        LobbySearchOrCreateUI.SetActive(false);
         lobbyHubUI.SetActive(false);
+        loginUI.SetActive(true);
+
     }
     #endregion
 
+    #region Login
+    public void OnLoginButton()
+    {
+        if(playerNameField.text==""|| playerNameField.text == null)
+        {
+            StartCoroutine(HandleMissingNameText(missingPlayerNameText));
+        }
+        else
+        {
+            GoOnLobbySearchUI();
+            EventsManager.OnPlayerNameSet?.Invoke();
+        }
+    }
+    private void GoOnLobbySearchUI()
+    {
+        loginUI.SetActive(false);
+        LobbySearchOrCreateUI.SetActive(true);
+    }
+
+    #endregion
+
     #region LobbyList
+    private void LobbyReadyEvent()
+    {
+        RefreshLobbyList();
+    }
     public void RefreshButton()
     {
         RefreshLobbyList();
@@ -221,7 +253,7 @@ public class LobbyUIManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(HandleMissingNameText());
+            StartCoroutine(HandleMissingNameText(lobbyNameMissingText));
         }
     }
 
@@ -229,15 +261,15 @@ public class LobbyUIManager : MonoBehaviour
     /// Missing Text appearing for a shor amount of time and disappearing again only when the name of the lobby is equal to ""
     /// </summary>
     /// <returns></returns>
-    private IEnumerator HandleMissingNameText()
+    private IEnumerator HandleMissingNameText(TextMeshProUGUI text)
     {
         if (!isWaiting)
         {
-            nameMissingText.text = "Name is missing or invalid";
+            text.text = "Name is missing or invalid";
             isWaiting = true;
-            nameMissingText.gameObject.SetActive(true);
+            text.gameObject.SetActive(true);
             yield return new WaitForSeconds(2f);
-            nameMissingText.gameObject.SetActive(false);
+            text.gameObject.SetActive(false);
             isWaiting = false;
         }
 

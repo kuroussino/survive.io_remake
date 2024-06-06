@@ -20,4 +20,6 @@ public static partial class EventsManager
     public static Action<Unity.Services.Lobbies.Models.Player> OnJoinedLobby;
     //Event called when the player clicked the leave lobby button, the lobby should update by removing the player
     public static Action OnLeaveLobbyButton;
+    //Event called after the input of the new player name, lobby should register this data for the player
+    public static Action OnPlayerNameSet;
 }
