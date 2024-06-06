@@ -12,8 +12,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: aee15a828acb9414b8a10de967301e00
   - enabled: 1
-    path: Assets/Scenes/SoranzioScene.unity
+    path: Assets/Scenes/SoranzioScenes/SoranzioScene.unity
     guid: efad05775dc0abb47ab6f66a9ae8de4f
+  - enabled: 0
+    path: Assets/Scenes/SoranzioScene.unity
+    guid: 1057fd60f4e114243adb076509f82036
   - enabled: 1
     path: Assets/Scenes/TestGameplay.unity
     guid: 626b63c53adacb44dac77e1e7b562925
