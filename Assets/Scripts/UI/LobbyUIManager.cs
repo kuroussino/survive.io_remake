@@ -81,6 +81,7 @@ public class LobbyUIManager : MonoBehaviour
         lobbyHubUI.SetActive(false);
     }
     #endregion
+
     #region LobbyList
     public void RefreshButton()
     {
@@ -292,6 +293,15 @@ public class LobbyUIManager : MonoBehaviour
         //playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player, lobbyManager.isHost());
         playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
     }
+
+    public void OnLeaveLobby() 
+    {
+        lobbyHubUI.SetActive(false);
+        LobbySearchOrCreateUI.SetActive(true);
+        lobbyNameInputField.text = "";
+        EventsManager.OnLeaveLobbyButton?.Invoke();
+    }
+
     #endregion
 
     /// <summary>

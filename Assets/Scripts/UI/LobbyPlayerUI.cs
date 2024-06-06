@@ -4,14 +4,17 @@ using TMPro;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LobbyPlayerUI : MonoBehaviour
 {
     #region UIVar
+    [Header("UI Var")]
     [SerializeField] TextMeshProUGUI PlayerNameText;
     [SerializeField] TextMeshProUGUI HostOrClientText;
     #endregion
     [HideInInspector] public string playerID { get; private set; }  
+
 
     /// <summary>
     /// UpdatePlayerUI will be called by the LobbyUIManager in order to compile the UI and update it 
