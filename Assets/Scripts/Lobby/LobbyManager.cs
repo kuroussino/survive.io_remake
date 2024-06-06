@@ -14,9 +14,6 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-using static UnityEngine.InputSystem.PlayerInputManager;
-using static UnityEngine.Rendering.DebugUI;
-using UnityEngine.InputSystem;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -28,15 +25,11 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private float checkConnectedTimer;
     [SerializeField] private float confirmedConnectedTimer;
     private float currentTimer;
-    private float currentTimeForConnected;
-    private bool doOnceConnected = true;
-    private bool doOnceResetPlayers = true;
     private string playerName;
     private int countForStartGame;
     private int countOfPlayersLoaded;
     private bool doOnce = true;
-    private bool notSync=false;
-    private string previousHost;
+
     [SerializeField] private GameObject playerPrefab;
     Lobby myLobby;
     LobbyEventCallbacks callbacks = new LobbyEventCallbacks();
@@ -385,7 +378,6 @@ public class LobbyManager : MonoBehaviour
             PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"Lobby Name: {myLobby.Name} - Lobby Max Players: {myLobby.MaxPlayers} Code: {myLobby.LobbyCode}");
             StartCoroutine(LobbyHeartbeat());
             PrintPLayers(myLobby);
-            previousHost = myLobby.HostId;
             try
             {
                 lobbyEvents = await Lobbies.Instance.SubscribeToLobbyEventsAsync(myLobby.Id, callbacks);
