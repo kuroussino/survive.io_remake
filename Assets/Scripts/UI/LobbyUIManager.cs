@@ -1,16 +1,11 @@
-using System;
+using CI.PowerConsole;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.Netcode;
-using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
-using UnityEditor.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(LobbyManager))]
 public class LobbyUIManager : MonoBehaviour
@@ -259,12 +254,15 @@ public class LobbyUIManager : MonoBehaviour
         lobbyHubUI.SetActive(true);
         LobbySearchOrCreateUI.SetActive(false);
         GameObject playerUI;
-        for (int i = 0; i < lobby.Players.Count; i++)
+
+        foreach(Unity.Services.Lobbies.Models.Player player in lobby.Players)
         {
-            playerUI=Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
-            playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(lobby.Players[i]);
+            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"player name is {player.Data["PlayerName"].Value}");
+            playerUI = Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
+            playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player, lobbyManager.isHost(player.Id));
             playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
         }
+
     }
 
     /// <summary>
@@ -291,7 +289,7 @@ public class LobbyUIManager : MonoBehaviour
     {
         GameObject playerUI;
         playerUI = Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
-        playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player);
+        //playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player, lobbyManager.isHost());
         playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
     }
     #endregion

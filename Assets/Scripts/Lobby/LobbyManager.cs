@@ -32,9 +32,11 @@ public class LobbyManager : MonoBehaviour
     private int countForStartGame;
     private int countOfPlayersLoaded;
     private bool doOnce = true;
+    private bool notSync=false;
     [SerializeField] private GameObject playerPrefab;
     Lobby myLobby;
-    //ILobbyEvents lobbyEvents;
+    LobbyEventCallbacks callbacks = new LobbyEventCallbacks();
+    ILobbyEvents lobbyEvents;
     //private float timerUpdate = 2f;
     //private float currentTimerUpdate;
 
@@ -79,6 +81,11 @@ public class LobbyManager : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         EventsManager.LobbyReady?.Invoke();
+
+        callbacks.PlayerJoined += PlayerJoinEvent;
+        callbacks.LobbyChanged += LobbyChangeEvent;
+
+
 
         #region Powerconsole
         PowerConsole.CommandEntered += (s, e) =>
@@ -134,6 +141,42 @@ public class LobbyManager : MonoBehaviour
 
     }
 
+    private void LobbyChangeEvent(ILobbyChanges changes)
+    {
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call change event");
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"players in change {myLobby.Players.Count}");
+        if (changes.LobbyDeleted)
+        {
+            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"lobby dead");
+        }
+        else
+        {
+            changes.ApplyToLobby(myLobby);
+            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"players in change after aplly changes {myLobby.Players.Count}");
+            EventsManager.OnShowLobby?.Invoke(myLobby);
+        }
+    }
+
+    private void PlayerJoinEvent(List<LobbyPlayerJoined> list)
+    {
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call joined event");
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"players before coroutine {myLobby.Players.Count}");
+        //StartCoroutine(SyncListPlayer());
+       
+    }
+
+    private IEnumerator SyncListPlayer()
+    {
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"waiting sync players");
+        while (!notSync)
+        {
+            yield return null;
+        }
+        notSync = false;
+        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"players now are sync {myLobby.Players.Count}");
+        EventsManager.OnShowLobby?.Invoke(myLobby);
+    }
+
     private async void Update()
     {
         if (myLobby != null)
@@ -141,23 +184,30 @@ public class LobbyManager : MonoBehaviour
             //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"last updated lobby {myLobby.LastUpdated}");
             //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"host id : {myLobby.HostId}");
             currentTimer += Time.deltaTime;
-            currentTimeForConnected += Time.deltaTime;
-            if (currentTimeForConnected < confirmedConnectedTimer && doOnceResetPlayers && isHost())
-            {
-                doOnceResetPlayers = false;
-                PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call reset players connection in time {currentTimeForConnected}");
-                foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
-                {
-                    await Lobbies.Instance.UpdatePlayerAsync(myLobby.Id, player.Id, new UpdatePlayerOptions
-                    {
-                        Data = new Dictionary<string, PlayerDataObject>
-                        {
-                            { "IsConnected", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "false") }
-                        }
-                    });
-                }
+            //currentTimeForConnected += Time.deltaTime;
+            //if (currentTimeForConnected < confirmedConnectedTimer && doOnceResetPlayers && isHost())
+            //{
+            //    doOnceResetPlayers = false;
+            //    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call reset players connection in time {currentTimeForConnected}");
+            //    foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
+            //    {
+            //        try
+            //        {
+            //            await Lobbies.Instance.UpdatePlayerAsync(myLobby.Id, player.Id, new UpdatePlayerOptions
+            //            {
+            //                Data = new Dictionary<string, PlayerDataObject>
+            //            {
+            //                { "IsConnected", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "false") }
+            //            }
+            //            });
+            //        }catch(LobbyServiceException err)
+            //        {
+            //            PowerConsole.Log(CI.PowerConsole.LogLevel.Error, $"error updating the player : {err}");
+            //        }
 
-            }
+            //    }
+
+            //}
             if (currentTimer >= timeUpdate)
             {
                 currentTimer = 0;
@@ -167,27 +217,29 @@ public class LobbyManager : MonoBehaviour
                     //System.DateTime.Now.ToUniversalTime();
                     //univDateTime.ToLocalTime();
                     //DateTime.Parse(deadPlayer.DeathDate_UTC)
-                    var h = System.DateTime.Now - myLobby.LastUpdated;
-                    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"time pass is {h.Seconds}");
-                    if (h.Seconds > hearthTime)
-                    {
+                    //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"last updated {myLobby.LastUpdated.ToLocalTime()}");
+                    //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"current time {System.DateTime.Now}");
+                    //var h = System.DateTime.Now - myLobby.LastUpdated.ToLocalTime();
+                    //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"time pass is {h.Seconds}");
+                    //if (h.Seconds > hearthTime)
+                    //{
 
-                        //foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
-                        //{
-                        //    await KickPlayer(player.Id);
-                        //}
-                        await LeaveLobby();
+                    //    //foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
+                    //    //{
+                    //    //    await KickPlayer(player.Id);
+                    //    //}
+                    //    await LeaveLobby();
 
-                        return;
-                    }
+                    //    return;
+                    //}
                     //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"System.DateTime.Now.ToUniversalTime();");
-                    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"lobby updated");
-                    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"current host id: {myLobby.HostId}");
+                    //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"lobby updated");
+                    //PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"current host id: {myLobby.HostId}");
 
-                    foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
-                    {
-                        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"status of my player {player.Data["PlayerName"].Value} is: {player.Data["IsConnected"].Value}");
-                    }
+                    //foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
+                    //{
+                    //    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"status of my player {player.Data["PlayerName"].Value} is: {player.Data["IsConnected"].Value}");
+                    //}
                     if (myLobby.Data["KEY_START_GAME"].Value != "null" && !isHost() && doOnce)
                     {
                         doOnce = false;
@@ -201,27 +253,28 @@ public class LobbyManager : MonoBehaviour
                 }
 
             }
-            if(currentTimeForConnected >= confirmedConnectedTimer && doOnceConnected)
-            {
-                PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call method for change status connection player in {currentTimeForConnected} and doOnce is {doOnceConnected}");
-                doOnceConnected = false;
-                await SetPlayerConnection("true");
-            }
-            if(currentTimeForConnected > checkConnectedTimer)
-            {
-                PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call checkstatus connection in time {currentTimeForConnected}");
-                currentTimeForConnected = 0;
-                doOnceConnected = true;
-                foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
-                {
-                    if (isHost() && player.Data["IsConnected"].Value.Equals("false"))
-                    {
-                        PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"this player must be kicked - {player.Data["PlayerName"].Value} - {player.Data["IsConnected"].Value}");
-                        await KickPlayer(player.Id);
-                    }
-                }
-                //await SetPlayerConnection("false");
-            }
+            //if(currentTimeForConnected >= confirmedConnectedTimer && doOnceConnected)
+            //{
+            //    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call method for change status connection player in {currentTimeForConnected} and doOnce is {doOnceConnected}");
+            //    doOnceConnected = false;
+            //    await SetPlayerConnection("true");
+            //}
+            //if(currentTimeForConnected > checkConnectedTimer)
+            //{
+            //    PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"call checkstatus connection in time {currentTimeForConnected}");
+            //    currentTimeForConnected = 0;
+            //    doOnceConnected = true;
+            //    doOnceResetPlayers = true;
+            //    foreach (Unity.Services.Lobbies.Models.Player player in myLobby.Players)
+            //    {
+            //        if (isHost() && player.Data["IsConnected"].Value.Equals("false"))
+            //        {
+            //            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"this player must be kicked - {player.Data["PlayerName"].Value} - {player.Data["IsConnected"].Value}");
+            //            await KickPlayer(player.Id);
+            //        }
+            //    }
+            //    //await SetPlayerConnection("false");
+            //}
 
         }
     }
@@ -280,6 +333,20 @@ public class LobbyManager : MonoBehaviour
             PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"Lobby Name: {myLobby.Name} - Lobby Max Players: {myLobby.MaxPlayers} Code: {myLobby.LobbyCode}");
             StartCoroutine(LobbyHeartbeat());
             PrintPLayers(myLobby);
+            try
+            {
+                lobbyEvents = await Lobbies.Instance.SubscribeToLobbyEventsAsync(myLobby.Id, callbacks);
+            }
+            catch (LobbyServiceException ex)
+            {
+                switch (ex.Reason)
+                {
+                    case LobbyExceptionReason.AlreadySubscribedToLobby: Debug.LogWarning($"Already subscribed to lobby[{myLobby.Id}]. We did not need to try and subscribe again. Exception Message: {ex.Message}"); break;
+                    case LobbyExceptionReason.SubscriptionToLobbyLostWhileBusy: Debug.LogError($"Subscription to lobby events was lost while it was busy trying to subscribe. Exception Message: {ex.Message}"); throw;
+                    case LobbyExceptionReason.LobbyEventServiceConnectionError: Debug.LogError($"Failed to connect to lobby events. Exception Message: {ex.Message}"); throw;
+                    default: throw;
+                }
+            }
             EventsManager.OnShowLobby?.Invoke(myLobby);
         }
         catch (LobbyServiceException err)
@@ -331,6 +398,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void JoinLobby(Lobby lobbyToJoin)
     {
+        //Unity.Services.Lobbies.Models.Player currentPlayer = GetPlayer();
         JoinLobbyByIdOptions joinLobbyById = new JoinLobbyByIdOptions()
         {
             Player = GetPlayer()
@@ -341,6 +409,21 @@ public class LobbyManager : MonoBehaviour
             myLobby = lobby;
             print($"Joined to {myLobby.Name}");
             PrintPLayers(myLobby);
+            try
+            {
+                lobbyEvents = await Lobbies.Instance.SubscribeToLobbyEventsAsync(myLobby.Id, callbacks);
+            }
+            catch (LobbyServiceException ex)
+            {
+                switch (ex.Reason)
+                {
+                    case LobbyExceptionReason.AlreadySubscribedToLobby: Debug.LogWarning($"Already subscribed to lobby[{myLobby.Id}]. We did not need to try and subscribe again. Exception Message: {ex.Message}"); break;
+                    case LobbyExceptionReason.SubscriptionToLobbyLostWhileBusy: Debug.LogError($"Subscription to lobby events was lost while it was busy trying to subscribe. Exception Message: {ex.Message}"); throw;
+                    case LobbyExceptionReason.LobbyEventServiceConnectionError: Debug.LogError($"Failed to connect to lobby events. Exception Message: {ex.Message}"); throw;
+                    default: throw;
+                }
+            }
+            EventsManager.OnShowLobby?.Invoke(myLobby);
         }
         catch (LobbyServiceException err)
         {
@@ -466,6 +549,18 @@ public class LobbyManager : MonoBehaviour
     private bool isHost()
     {
         if(AuthenticationService.Instance.PlayerId == myLobby.HostId)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool isHost(string id)
+    {
+        if (id == myLobby.HostId)
         {
             return true;
         }
