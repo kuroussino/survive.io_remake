@@ -20,9 +20,11 @@ public class BulletBehaviour : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent(out I_Damageable enemy))
+        {
             enemy.TakeDamage(damage);
-        if (!collision.gameObject.TryGetComponent(out BulletBehaviour bullet))
             Destroy(gameObject);
+        }
+           
     }
 
     /// <summary>

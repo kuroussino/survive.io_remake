@@ -5,13 +5,14 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 
-public class Player : MonoBehaviour, I_Damageable
+public class Player : NetworkBehaviour, I_Damageable
 {
     const bool _permanentlyImmuneToDeathZone = false;
     public bool PermanentlyImmuneToDeathZone => _permanentlyImmuneToDeathZone;
     PlayerMovement movement;
     PlayerInventory inventory;
     PlayerResources resources;
+    [SerializeField] bool testing;
 
     bool isPressingFireInput = false;
 
@@ -36,18 +37,32 @@ public class Player : MonoBehaviour, I_Damageable
     }
     private IEnumerator Start()
     {
-        yield return new WaitForSeconds(1);
-        NetworkManager.Singleton.StartHost();
-        A_Weapon weapon = FindObjectOfType<A_Weapon>();
-        TryCollectItem(weapon);
+        if (!IsControlledPlayer())
+            yield break;
+
+        if (testing)
+        {
+            yield return new WaitForSeconds(1);
+            NetworkManager.Singleton.StartHost();
+            A_Weapon weapon = FindObjectOfType<A_Weapon>();
+            TryCollectItem(weapon);
+        }
     }
     #endregion
+
+    #region Input
     private void OnPlayerAimInput(Vector2 vector)
     {
+        if (!IsControlledPlayer())
+            return;
+
         movement.OnAimInput(vector);
     }
     private void OnPlayerFireInput(bool fire)
     {
+        if (!IsControlledPlayer())
+            return;
+
         if (fire == isPressingFireInput)
             return;
 
@@ -65,19 +80,43 @@ public class Player : MonoBehaviour, I_Damageable
     }
     private void OnPlayerMovementInput(Vector2 vector)
     {
+        if (!IsControlledPlayer())
+            return;
+
         movement.OnMovementInput(vector);
     }
+    bool IsControlledPlayer()
+    {
+        bool? isControlled = EventsManager.isOwnerPlayer?.Invoke(this);
+        if (isControlled == null)
+            return false;
+
+        return isControlled.Value;
+    }
+    #endregion
+
     public void TakeDamage(float damageAmount)
     {
+        Debug.Log($"{name} took damage!");
         resources?.TakeDirectDamage(damageAmount);
     }
-    public void TryCollectItem(I_Item item)
+    public bool TryCollectItem(I_Item item)
     {
         inventory.TryGetItem(item, out EquipmentData equipmentData);
         if(equipmentData.weapon != null)
         {
-            A_Weapon weapon = equipmentData.weapon;
+            A_Weapon weapon = Instantiate(equipmentData.weapon);
+            var instanceNetworkObject = weapon.GetComponent<NetworkObject>();
+            instanceNetworkObject.Spawn();
             movement.EquipWeapon(weapon);
+            return true;
         }
+
+        return false;
     }
+    public void Heal(float amount)
+    {
+        resources?.Heal(amount);
+    }
+
 }

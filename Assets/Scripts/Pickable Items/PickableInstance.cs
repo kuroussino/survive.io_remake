@@ -36,10 +36,14 @@ public class PickableInstance : NetworkBehaviour
     /// <summary>
     /// Should be calling the implementation of a method of the I_Item interface, because every item must know how to behave when equipped.
     /// </summary>
-    public void GetItem() 
+    public void GetItem(Player player) 
     {
-        print("yo ecco sono nell'inventario");
-        Destroy(gameObject);
+        I_Item item = prefabItem.GetComponent<I_Item>();
+        if (item == null)
+            return;
+
+        if(player.TryCollectItem(item))
+            Destroy(gameObject);
     }
 
     /// <summary>
