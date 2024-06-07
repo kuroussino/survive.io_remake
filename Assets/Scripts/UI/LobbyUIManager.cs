@@ -1,21 +1,24 @@
-using System;
+using CI.PowerConsole;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Diagnostics.Tracing;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.Netcode;
-using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
-using UnityEditor.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(LobbyManager))]
 public class LobbyUIManager : MonoBehaviour
 {
     #region Variables
+
+    [Space(10)]
+    [Header("UI login var")]
+    [SerializeField] TMP_InputField playerNameField;
+    [SerializeField] GameObject loginUI;
+    [SerializeField] TextMeshProUGUI missingPlayerNameText;
+
 
     [Space(10)]
     [Header("UI lobby searching var")]
@@ -26,13 +29,19 @@ public class LobbyUIManager : MonoBehaviour
     [SerializeField] GameObject LobbySearchOrCreateUI;
     [SerializeField] TextMeshProUGUI lobbyMissingtext;
     [SerializeField] TextMeshProUGUI pagesCountText;
-    [SerializeField] TextMeshProUGUI nameMissingText;
+    [SerializeField] TextMeshProUGUI lobbyNameMissingText;
 
     [Space(10)]
     [Header("UI lobby hub var")]
     [SerializeField] GameObject lobbyHubUI;
     [SerializeField] GameObject playerLobbyUI;
     [SerializeField] GameObject verticalLobbyLayoutUI;
+    [SerializeField] GameObject startGameButton;
+    [SerializeField] TextMeshProUGUI counterPlayers;
+    [SerializeField] TextMeshProUGUI lobbyNamePreLobby;
+    [SerializeField] GameObject preGameStart;
+
+
 
     [Space(10)]
     [Header("Lobby Manager")]
@@ -49,8 +58,6 @@ public class LobbyUIManager : MonoBehaviour
     int currentPageNumber = 0;
     string lobbyName;
     bool isWaiting;
-    //List<FakeLobbies> fakeLobbyList=new List<FakeLobbies>();
-    //[SerializeField] int numberOfFakeLobbiesWanted;
     #endregion
 
     #region Mono
@@ -61,6 +68,7 @@ public class LobbyUIManager : MonoBehaviour
         EventsManager.OnShowLobby += OnShowingLobby;
         EventsManager.OnQuittedLobby += OnQuitPlayer;
         EventsManager.OnJoinedLobby += OnJoinPlayer;
+        EventsManager.GameStarting += StartGameEvent;
     }
 
     private void OnDisable()
@@ -69,12 +77,10 @@ public class LobbyUIManager : MonoBehaviour
         EventsManager.OnShowLobby -= OnShowingLobby;
         EventsManager.OnQuittedLobby -= OnQuitPlayer;
         EventsManager.OnJoinedLobby -= OnJoinPlayer;
+        EventsManager.GameStarting -= StartGameEvent;
     }
 
-    private void LobbyReadyEvent()
-    {
-        RefreshLobbyList();
-    }
+
 
     private void Awake()
     {
@@ -82,11 +88,39 @@ public class LobbyUIManager : MonoBehaviour
     }
     private void Start()
     {
-        LobbySearchOrCreateUI.SetActive(true);
+        LobbySearchOrCreateUI.SetActive(false);
         lobbyHubUI.SetActive(false);
+        loginUI.SetActive(true);
+
     }
     #endregion
+
+    #region Login
+    public void OnLoginButton()
+    {
+        if(playerNameField.text==""|| playerNameField.text == null)
+        {
+            StartCoroutine(HandleMissingNameText(missingPlayerNameText));
+        }
+        else
+        {
+            GoOnLobbySearchUI();
+            EventsManager.OnPlayerNameSet?.Invoke(playerNameField.text);
+        }
+    }
+    private void GoOnLobbySearchUI()
+    {
+        loginUI.SetActive(false);
+        LobbySearchOrCreateUI.SetActive(true);
+    }
+
+    #endregion
+
     #region LobbyList
+    private void LobbyReadyEvent()
+    {
+        RefreshLobbyList();
+    }
     public void RefreshButton()
     {
         RefreshLobbyList();
@@ -225,7 +259,7 @@ public class LobbyUIManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(HandleMissingNameText());
+            StartCoroutine(HandleMissingNameText(lobbyNameMissingText));
         }
     }
 
@@ -233,15 +267,15 @@ public class LobbyUIManager : MonoBehaviour
     /// Missing Text appearing for a shor amount of time and disappearing again only when the name of the lobby is equal to ""
     /// </summary>
     /// <returns></returns>
-    private IEnumerator HandleMissingNameText()
+    private IEnumerator HandleMissingNameText(TextMeshProUGUI text)
     {
         if (!isWaiting)
         {
-            nameMissingText.text = "Name is missing or invalid";
+            text.text = "Name is missing or invalid";
             isWaiting = true;
-            nameMissingText.gameObject.SetActive(true);
+            text.gameObject.SetActive(true);
             yield return new WaitForSeconds(2f);
-            nameMissingText.gameObject.SetActive(false);
+            text.gameObject.SetActive(false);
             isWaiting = false;
         }
 
@@ -254,17 +288,34 @@ public class LobbyUIManager : MonoBehaviour
     /// Called throught event when the lobby is up and created, it will shows the UI of the lobbyHub with a list of players connected
     /// </summary>
     /// <param name="lobby"></param>
-    private void OnShowingLobby(Lobby lobby)
+    private void OnShowingLobby(Lobby lobby, bool isHostVar)
     {
         lobbyHubUI.SetActive(true);
         LobbySearchOrCreateUI.SetActive(false);
-        GameObject playerUI;
-        for (int i = 0; i < lobby.Players.Count; i++)
+        if(isHostVar)
         {
-            playerUI=Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
-            playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(lobby.Players[i]);
+            startGameButton.SetActive(true);
+        }
+        else
+        {
+            startGameButton.SetActive(false);
+        }
+        GameObject playerUI;
+        GameObject[] panels = GameObject.FindGameObjectsWithTag("PlayerUI");
+        foreach (GameObject p in panels)
+        {
+            Destroy(p);
+        }
+        counterPlayers.text= lobby.Players.Count.ToString()+"/"+lobby.MaxPlayers.ToString();
+        lobbyNamePreLobby.text = lobby.Name;
+        foreach (Unity.Services.Lobbies.Models.Player player in lobby.Players)
+        {
+            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"player name is {player.Data["PlayerName"].Value}");
+            playerUI = Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
+            playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player, lobbyManager.isHost(player.Id));
             playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
         }
+
     }
 
     /// <summary>
@@ -291,9 +342,30 @@ public class LobbyUIManager : MonoBehaviour
     {
         GameObject playerUI;
         playerUI = Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
-        playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player);
+        //playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player, lobbyManager.isHost());
         playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
     }
+
+    public void OnLeaveLobby() 
+    {
+        lobbyHubUI.SetActive(false);
+        LobbySearchOrCreateUI.SetActive(true);
+        lobbyNameInputField.text = "";
+        EventsManager.OnLeaveLobbyButton?.Invoke();
+    }
+
+    public void OnClickStartGame()
+    {
+
+        EventsManager.OnHostStartGame?.Invoke();
+    }
+
+    private void StartGameEvent()
+    {
+        lobbyHubUI.SetActive(false);
+        preGameStart.SetActive(true);
+    }
+
     #endregion
 
     /// <summary>
