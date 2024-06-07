@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 
-public class Player : NetworkBehaviour, I_Damageable
+public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
 {
     const bool _permanentlyImmuneToDeathZone = false;
     public bool PermanentlyImmuneToDeathZone => _permanentlyImmuneToDeathZone;
@@ -27,7 +27,6 @@ public class Player : NetworkBehaviour, I_Damageable
     private void OnEnable()
     {
         EventsManager.playerMovementInput += OnPlayerMovementInput;
-        EventsManager.playerAimInput += OnPlayerAimInput;
         EventsManager.playerFireInput += OnPlayerFireInput;
         inventory.weaponEquipped += OnWeaponEquipped;
     }
@@ -35,19 +34,18 @@ public class Player : NetworkBehaviour, I_Damageable
     private void OnDisable()
     {
         EventsManager.playerMovementInput -= OnPlayerMovementInput;
-        EventsManager.playerAimInput -= OnPlayerAimInput;
         EventsManager.playerFireInput -= OnPlayerFireInput;
         inventory.weaponEquipped += OnWeaponEquipped;
     }
     #endregion
 
     #region Input
-    private void OnPlayerAimInput(Vector2 vector)
+    private void Update()
     {
         if (!IsControlledPlayer())
             return;
 
-        movement.OnAimInput(vector);
+        movement.OnAimInput();
     }
     private void OnPlayerFireInput(bool fire)
     {
@@ -65,7 +63,10 @@ public class Player : NetworkBehaviour, I_Damageable
     {
         while (isPressingFireInput)
         {
-            inventory.OnFireInput();
+            if (inventory.IsBareHanded)
+                movement.Punch(this);
+            else
+                inventory.OnFireInput();
             yield return new WaitForEndOfFrame();
         }
     }
@@ -92,7 +93,7 @@ public class Player : NetworkBehaviour, I_Damageable
     public DamageResponseInfo TakeDamage(DamageQueryInfo info)
     {
         DamageResponseInfo responseInfo = new DamageResponseInfo();
-        if((object)info.source == this)
+        if((object)info.owner == this)
         {
             responseInfo.attackAbsorbed = false;
             return responseInfo;
@@ -114,5 +115,4 @@ public class Player : NetworkBehaviour, I_Damageable
     {
         movement.EquipWeapon(weapon);
     }
-
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -6,8 +7,8 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] VariableReference<float> _baseMovement;
 
-    [SerializeField] Transform firstHand;
-    [SerializeField] Transform secondHand;
+    [SerializeField] PlayerPunch firstHand;
+    [SerializeField] PlayerPunch secondHand;
 
     [SerializeField] Transform firstHandMainPosition;
     [SerializeField] Transform secondHandMainPosition;
@@ -19,7 +20,13 @@ public class PlayerMovement : MonoBehaviour
     {
         lastMovementInput = direction;
     }
-    public void OnAimInput(Vector2 delta)
+    public void Punch(I_DamageOwner owner)
+    {
+        UnifiedDamageSource unifiedDamageSource = new UnifiedDamageSource(owner);
+        firstHand.Punch(unifiedDamageSource);
+        secondHand.Punch(unifiedDamageSource);
+    }
+    public void OnAimInput()
     {
         Vector2Control mousePositionControl = Mouse.current.position;
         Vector2 mousePosition = mousePositionControl.value;
@@ -40,13 +47,13 @@ public class PlayerMovement : MonoBehaviour
 
         weapon.gameObject.transform.SetParent(playerSprites);
         weapon.transform.rotation = playerSprites.rotation;
-        firstHand.position = firstHandMainPosition.position;
-        weapon.transform.position = firstHand.position;
+        firstHand.transform.position = firstHandMainPosition.position;
+        weapon.transform.position = firstHand.transform.position;
     }
     void ResetHandsPosition()
     {
-        firstHand.position = firstHandMainPosition.position;
-        secondHand.position = secondHandMainPosition.position;
+        firstHand.transform.position = firstHandMainPosition.position;
+        secondHand.transform.position = secondHandMainPosition.position;
     }
     private void Update()
     {
