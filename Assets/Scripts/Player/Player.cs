@@ -89,7 +89,7 @@ public class Player : NetworkBehaviour, I_Damageable
     {
         bool? isControlled = EventsManager.isOwnerPlayer?.Invoke(this);
         if (isControlled == null)
-            return false;
+            return IsOwner;
 
         return isControlled.Value;
     }
