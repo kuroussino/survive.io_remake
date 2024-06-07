@@ -328,8 +328,11 @@ public class LobbyUIManager : MonoBehaviour
        {
             if (playerShowedInUIList[i].playerID == player.Id)
             {
-                playerShowedInUIList[i].RemovePlayer();
-                return;
+                if (playerShowedInUIList[i] != null)
+                {
+                    playerShowedInUIList[i].RemovePlayer();
+                    return;
+                }
             }
        }
     }
@@ -356,7 +359,6 @@ public class LobbyUIManager : MonoBehaviour
 
     public void OnClickStartGame()
     {
-
         EventsManager.OnHostStartGame?.Invoke();
     }
 
