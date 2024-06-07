@@ -8,6 +8,11 @@ using UnityEngine;
 /// </summary>
 public abstract class A_Weapon : NetworkBehaviour, I_Item
 {
+    protected I_DamagerOwner owner;
+    public void SetOwner(I_DamagerOwner owner)
+    {
+        this.owner = owner;
+    }
     #region Variables and Properties
 
     [Header("Stats and Variables")]

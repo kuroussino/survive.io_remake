@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerInventory : MonoBehaviour
+public class PlayerInventory : NetworkBehaviour
 {
-    public Action weaponEquipped;
+    public Action<A_Weapon> weaponEquipped;
     //heal
     //armor
     //TryAbsorbDamage
@@ -19,24 +20,21 @@ public class PlayerInventory : MonoBehaviour
     {
         weapon?.Reload();
     }
-    public void TryGetItem(I_Item item, out EquipmentData equipmentData)
+    public bool TryGetItem(I_Item item)
     {
-        equipmentData = new EquipmentData();
         A_Weapon weapon = item as A_Weapon;
         if(weapon != null)
         {
             SortWeapon(weapon);
-            equipmentData.weapon = weapon;
-            return;
+            return true;
         }
+        return false;
     }
     void SortWeapon(A_Weapon weapon)
     {
         this.weapon = weapon;
+        A_Weapon newWeapon = Instantiate(weapon);
+        var instanceNetworkObject = newWeapon.GetComponent<NetworkObject>();
+        instanceNetworkObject.Spawn();
     }
-}
-
-public class EquipmentData
-{
-    public A_Weapon weapon;
 }

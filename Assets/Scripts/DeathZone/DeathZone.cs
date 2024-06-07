@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class DeathZone : MonoBehaviour
+public class DeathZone : MonoBehaviour, I_DamagerOwner
 {
     [SerializeField] DeathZoneHitbox deathZoneHitbox;
     [SerializeField] DeathZoneHitbox safeZoneHitbox;
@@ -42,7 +42,10 @@ public class DeathZone : MonoBehaviour
                 else
                 {
                     item.Value.AddTime(-secondsPerDamageTick);
-                    item.Key.TakeDamage(damagePerDamageTick);
+                    DamageQueryInfo info = new DamageQueryInfo();
+                    info.damageAmount = damagePerDamageTick;
+                    info.source = this;
+                    item.Key.TakeDamage(info);
                 }
             }
         }

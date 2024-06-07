@@ -31,11 +31,6 @@ public class Player : NetworkBehaviour, I_Damageable
         inventory.weaponEquipped += OnWeaponEquipped;
     }
 
-    private void OnWeaponEquipped()
-    {
-        throw new NotImplementedException();
-    }
-
     private void OnDisable()
     {
         EventsManager.playerMovementInput -= OnPlayerMovementInput;
@@ -93,28 +88,30 @@ public class Player : NetworkBehaviour, I_Damageable
     }
     #endregion
 
-    public void TakeDamage(float damageAmount)
+    public DamageResponseInfo TakeDamage(DamageQueryInfo info)
     {
+        DamageResponseInfo responseInfo = new DamageResponseInfo();
+        if((object)info.source == this)
+        {
+            responseInfo.attackAbsorbed = false;
+            return responseInfo;
+        }
+
         Debug.Log($"{name} took damage!");
-        resources?.TakeDirectDamage(damageAmount);
+        resources?.TakeDirectDamage(info.damageAmount);
+        return responseInfo;
     }
     public bool TryCollectItem(I_Item item)
     {
-        inventory.TryGetItem(item, out EquipmentData equipmentData);
-        if(equipmentData.weapon != null)
-        {
-            A_Weapon weapon = equipmentData.weapon;
-            var instanceNetworkObject = weapon.GetComponent<NetworkObject>();
-            instanceNetworkObject.Spawn();
-            movement.EquipWeapon(weapon);
-            return true;
-        }
-
-        return false;
+        return inventory.TryGetItem(item);
     }
     public void Heal(float amount)
     {
         resources?.Heal(amount);
+    }
+    private void OnWeaponEquipped(A_Weapon weapon)
+    {
+        movement.EquipWeapon(weapon);
     }
 
 }
