@@ -24,4 +24,6 @@ public static partial class EventsManager
     public static Action<string> OnPlayerNameSet;
     //Event fire when lobby is starting from relay
     public static Action GameStarting;
+    //
+    public static Action LobbyReady;
 }
