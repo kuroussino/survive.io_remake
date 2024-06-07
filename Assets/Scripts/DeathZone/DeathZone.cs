@@ -44,7 +44,7 @@ public class DeathZone : MonoBehaviour, I_DamageOwner
                     item.Value.AddTime(-secondsPerDamageTick);
                     DamageQueryInfo info = new DamageQueryInfo();
                     info.damageAmount = damagePerDamageTick;
-                    info.source = this;
+                    info.owner = this;
                     item.Key.TakeDamage(info);
                 }
             }

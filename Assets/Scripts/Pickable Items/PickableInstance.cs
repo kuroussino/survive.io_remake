@@ -75,6 +75,11 @@ public class PickableInstance : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision) 
     {
+        Player player = collision.GetComponent<Player>();
+        if (player == null)
+            return;
+
+        GetItem(player);
         ActivateUI();
     }
 

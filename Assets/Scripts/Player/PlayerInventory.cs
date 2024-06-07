@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerInventory : NetworkBehaviour
 {
     public Action<A_Weapon> weaponEquipped;
+    public bool IsBareHanded => weapon == null;
     //heal
     //armor
     //TryAbsorbDamage
@@ -32,9 +33,10 @@ public class PlayerInventory : NetworkBehaviour
     }
     void SortWeapon(A_Weapon weapon)
     {
-        this.weapon = weapon;
         A_Weapon newWeapon = Instantiate(weapon);
+        this.weapon = newWeapon;
         var instanceNetworkObject = newWeapon.GetComponent<NetworkObject>();
         instanceNetworkObject.Spawn();
+        weaponEquipped?.Invoke(newWeapon);
     }
 }

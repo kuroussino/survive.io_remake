@@ -25,7 +25,7 @@ public class BulletBehaviour : MonoBehaviour
             DamageQueryInfo info = new DamageQueryInfo
             {
                 damageAmount = damage,
-                source = source,
+                owner = source,
             };
             enemy.TakeDamage(info);
             Destroy(gameObject);
