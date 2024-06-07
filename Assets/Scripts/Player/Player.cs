@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour, I_Damageable
     PlayerInventory inventory;
     PlayerResources resources;
     [SerializeField] bool canActRegardless;
+    [SerializeField] bool canMoveRegardless;
 
     bool isPressingFireInput = false;
 
@@ -70,7 +71,7 @@ public class Player : NetworkBehaviour, I_Damageable
     }
     private void OnPlayerMovementInput(Vector2 vector)
     {
-        if (!IsControlledPlayer())
+        if (!canMoveRegardless && !IsControlledPlayer())
             return;
 
         movement.OnMovementInput(vector);

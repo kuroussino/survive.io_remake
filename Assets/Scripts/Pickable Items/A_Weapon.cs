@@ -8,8 +8,8 @@ using UnityEngine;
 /// </summary>
 public abstract class A_Weapon : NetworkBehaviour, I_Item
 {
-    protected I_DamagerOwner owner;
-    public void SetOwner(I_DamagerOwner owner)
+    protected I_DamageOwner owner;
+    public void SetOwner(I_DamageOwner owner)
     {
         this.owner = owner;
     }

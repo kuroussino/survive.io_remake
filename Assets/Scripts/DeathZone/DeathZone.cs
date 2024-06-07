@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class DeathZone : MonoBehaviour, I_DamagerOwner
+public class DeathZone : MonoBehaviour, I_DamageOwner
 {
     [SerializeField] DeathZoneHitbox deathZoneHitbox;
     [SerializeField] DeathZoneHitbox safeZoneHitbox;

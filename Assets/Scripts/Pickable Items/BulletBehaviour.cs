@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BulletBehaviour : MonoBehaviour
 {
-    private I_DamagerOwner source;
+    private I_DamageOwner source;
     private float damage;
     private float speed;
     private Vector3 direction;
@@ -51,7 +51,7 @@ public class BulletBehaviour : MonoBehaviour
 
 public struct BulletData
 {
-    public I_DamagerOwner source;
+    public I_DamageOwner source;
     public float damage;
     public float speed;
     public float range;

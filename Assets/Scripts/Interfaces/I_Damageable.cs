@@ -11,7 +11,7 @@ public interface I_Damageable
 
 public struct DamageQueryInfo
 {
-    public I_DamagerOwner source;
+    public I_DamageOwner source;
     public float damageAmount;
 }
 public struct DamageResponseInfo
