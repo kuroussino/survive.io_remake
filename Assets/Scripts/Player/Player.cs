@@ -12,7 +12,7 @@ public class Player : NetworkBehaviour, I_Damageable
     PlayerMovement movement;
     PlayerInventory inventory;
     PlayerResources resources;
-    [SerializeField] bool testing;
+    [SerializeField] bool canActRegardless;
 
     bool isPressingFireInput = false;
 
@@ -28,25 +28,20 @@ public class Player : NetworkBehaviour, I_Damageable
         EventsManager.playerMovementInput += OnPlayerMovementInput;
         EventsManager.playerAimInput += OnPlayerAimInput;
         EventsManager.playerFireInput += OnPlayerFireInput;
+        inventory.weaponEquipped += OnWeaponEquipped;
     }
+
+    private void OnWeaponEquipped()
+    {
+        throw new NotImplementedException();
+    }
+
     private void OnDisable()
     {
         EventsManager.playerMovementInput -= OnPlayerMovementInput;
         EventsManager.playerAimInput -= OnPlayerAimInput;
         EventsManager.playerFireInput -= OnPlayerFireInput;
-    }
-    private IEnumerator Start()
-    {
-        if (!IsControlledPlayer())
-            yield break;
-
-        if (testing)
-        {
-            yield return new WaitForSeconds(1);
-            NetworkManager.Singleton.StartHost();
-            A_Weapon weapon = FindObjectOfType<A_Weapon>();
-            TryCollectItem(weapon);
-        }
+        inventory.weaponEquipped += OnWeaponEquipped;
     }
     #endregion
 
@@ -87,6 +82,9 @@ public class Player : NetworkBehaviour, I_Damageable
     }
     bool IsControlledPlayer()
     {
+        if (canActRegardless)
+            return true;
+
         bool? isControlled = EventsManager.isOwnerPlayer?.Invoke(this);
         if (isControlled == null)
             return IsOwner;
@@ -105,7 +103,7 @@ public class Player : NetworkBehaviour, I_Damageable
         inventory.TryGetItem(item, out EquipmentData equipmentData);
         if(equipmentData.weapon != null)
         {
-            A_Weapon weapon = Instantiate(equipmentData.weapon);
+            A_Weapon weapon = equipmentData.weapon;
             var instanceNetworkObject = weapon.GetComponent<NetworkObject>();
             instanceNetworkObject.Spawn();
             movement.EquipWeapon(weapon);
