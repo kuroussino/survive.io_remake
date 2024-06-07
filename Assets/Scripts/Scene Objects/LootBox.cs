@@ -15,8 +15,7 @@ public class LootBox : NetworkBehaviour, I_Damageable
     {
         base.OnNetworkSpawn();
     }
-
-    public void TakeDamage(float damageAmount)
+    public DamageResponseInfo TakeDamage(DamageQueryInfo info)
     {
         int maxItems = Random.Range(1, maxRangeItems + 1);
         for (int i = 0; i < maxItems; i++)
@@ -30,5 +29,6 @@ public class LootBox : NetworkBehaviour, I_Damageable
             pick.SetPrefabToSpawn(weapon ? ((A_Weapon)item).gameObject : ((A_Support)item).gameObject, item.GetSpriteItem());
         }
         Destroy(gameObject);
+        return new DamageResponseInfo();
     }
 }

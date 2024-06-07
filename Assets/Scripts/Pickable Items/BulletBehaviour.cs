@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BulletBehaviour : MonoBehaviour
 {
+    private I_DamageOwner source;
     private float damage;
     private float speed;
     private Vector3 direction;
@@ -21,7 +22,12 @@ public class BulletBehaviour : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out I_Damageable enemy))
         {
-            enemy.TakeDamage(damage);
+            DamageQueryInfo info = new DamageQueryInfo
+            {
+                damageAmount = damage,
+                source = source,
+            };
+            enemy.TakeDamage(info);
             Destroy(gameObject);
         }
            
@@ -33,11 +39,21 @@ public class BulletBehaviour : MonoBehaviour
     /// <param name="damage"></param>
     /// <param name="speed"></param>
     /// <param name="range"></param>
-    public void SetDataBulletFromWeapon(float damage, float speed, float range, Sprite sprite)
+    public void SetDataBulletFromWeapon(BulletData data)
     {
-        this.damage = damage;
-        this.speed = speed;
-        GetComponent<SpriteRenderer>().sprite = sprite;
-        Destroy(gameObject, range / speed);
+        this.damage = data.damage;
+        this.speed = data.speed;
+        GetComponent<SpriteRenderer>().sprite = data.sprite;
+        this.source = data.source;
+        Destroy(gameObject, data.range / speed);
     }
+}
+
+public struct BulletData
+{
+    public I_DamageOwner source;
+    public float damage;
+    public float speed;
+    public float range;
+    public Sprite sprite;
 }

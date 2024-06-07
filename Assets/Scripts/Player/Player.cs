@@ -12,7 +12,8 @@ public class Player : NetworkBehaviour, I_Damageable
     PlayerMovement movement;
     PlayerInventory inventory;
     PlayerResources resources;
-    [SerializeField] bool testing;
+    [SerializeField] bool canActRegardless;
+    [SerializeField] bool canMoveRegardless;
 
     bool isPressingFireInput = false;
 
@@ -28,25 +29,15 @@ public class Player : NetworkBehaviour, I_Damageable
         EventsManager.playerMovementInput += OnPlayerMovementInput;
         EventsManager.playerAimInput += OnPlayerAimInput;
         EventsManager.playerFireInput += OnPlayerFireInput;
+        inventory.weaponEquipped += OnWeaponEquipped;
     }
+
     private void OnDisable()
     {
         EventsManager.playerMovementInput -= OnPlayerMovementInput;
         EventsManager.playerAimInput -= OnPlayerAimInput;
         EventsManager.playerFireInput -= OnPlayerFireInput;
-    }
-    private IEnumerator Start()
-    {
-        if (!IsControlledPlayer())
-            yield break;
-
-        if (testing)
-        {
-            yield return new WaitForSeconds(1);
-            NetworkManager.Singleton.StartHost();
-            A_Weapon weapon = FindObjectOfType<A_Weapon>();
-            TryCollectItem(weapon);
-        }
+        inventory.weaponEquipped += OnWeaponEquipped;
     }
     #endregion
 
@@ -80,43 +71,48 @@ public class Player : NetworkBehaviour, I_Damageable
     }
     private void OnPlayerMovementInput(Vector2 vector)
     {
-        if (!IsControlledPlayer())
+        if (!canMoveRegardless && !IsControlledPlayer())
             return;
 
         movement.OnMovementInput(vector);
     }
     bool IsControlledPlayer()
     {
+        if (canActRegardless)
+            return true;
+
         bool? isControlled = EventsManager.isOwnerPlayer?.Invoke(this);
         if (isControlled == null)
-            return false;
+            return IsOwner;
 
         return isControlled.Value;
     }
     #endregion
 
-    public void TakeDamage(float damageAmount)
+    public DamageResponseInfo TakeDamage(DamageQueryInfo info)
     {
+        DamageResponseInfo responseInfo = new DamageResponseInfo();
+        if((object)info.source == this)
+        {
+            responseInfo.attackAbsorbed = false;
+            return responseInfo;
+        }
+
         Debug.Log($"{name} took damage!");
-        resources?.TakeDirectDamage(damageAmount);
+        resources?.TakeDirectDamage(info.damageAmount);
+        return responseInfo;
     }
     public bool TryCollectItem(I_Item item)
     {
-        inventory.TryGetItem(item, out EquipmentData equipmentData);
-        if(equipmentData.weapon != null)
-        {
-            A_Weapon weapon = Instantiate(equipmentData.weapon);
-            var instanceNetworkObject = weapon.GetComponent<NetworkObject>();
-            instanceNetworkObject.Spawn();
-            movement.EquipWeapon(weapon);
-            return true;
-        }
-
-        return false;
+        return inventory.TryGetItem(item);
     }
     public void Heal(float amount)
     {
         resources?.Heal(amount);
+    }
+    private void OnWeaponEquipped(A_Weapon weapon)
+    {
+        movement.EquipWeapon(weapon);
     }
 
 }

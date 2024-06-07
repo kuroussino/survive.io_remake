@@ -19,4 +19,6 @@ public static partial class EventsManager
     public static Action<Transform> changePlayerCameraTarget;
 
     public static Func<Player, bool> isOwnerPlayer;
+
+    public static Func<Player, Transform> getSpawnPosition;
 }
