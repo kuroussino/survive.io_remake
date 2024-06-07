@@ -16,7 +16,10 @@ public class CameraTargetSwapper : MonoBehaviour
     {
         EventsManager.cameraSwitchInput -= OnPlayerSwitchCameraTargetInput;
     }
-
+    private void Start()
+    {
+        OnPlayerSwitchCameraTargetInput();
+    }
     private void OnPlayerSwitchCameraTargetInput()
     {
         targetInput++;
