@@ -7,6 +7,6 @@ using Unity.Services.Lobbies.Models;
 public static partial class EventsManager
 {
 
-    public static Action LobbyReady;
+    // public static Action LobbyReady;
 
 }
