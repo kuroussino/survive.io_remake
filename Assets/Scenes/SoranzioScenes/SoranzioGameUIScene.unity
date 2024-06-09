@@ -579,6 +579,7 @@ GameObject:
   - component: {fileID: 178529130}
   - component: {fileID: 178529129}
   - component: {fileID: 178529128}
+  - component: {fileID: 178529132}
   m_Layer: 5
   m_Name: PlayerUI
   m_TagString: Untagged
@@ -676,6 +677,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &178529132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 178529127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 261d3030399193f4fb5dcbeabd46493e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerUI: {fileID: 178529127}
+  scopeTextUI: {fileID: 219991372}
+  playerHPSlider: {fileID: 846012563}
+  PrimaryWeaponSprite: {fileID: 1610806023}
+  PrimaryWeaponName: {fileID: 501194412}
+  healthPackNumber: {fileID: 374267718}
+  currentBulletsText: {fileID: 893747017}
+  playerCountText: {fileID: 1776670129}
+  notificationText: {fileID: 1135556604}
+  notificationColor: {r: 0.91372555, g: 0.9490197, b: 0.19607845, a: 0}
 --- !u!1 &219991370
 GameObject:
   m_ObjectHideFlags: 0
