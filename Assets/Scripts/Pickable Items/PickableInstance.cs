@@ -34,7 +34,7 @@ public class PickableInstance : NetworkBehaviour
     }
 
     /// <summary>
-    /// Should be calling the implementation of a method of the I_Item interface, because every item must know how to behave when equipped.
+    /// 
     /// </summary>
     public void GetItem(Player player) 
     {

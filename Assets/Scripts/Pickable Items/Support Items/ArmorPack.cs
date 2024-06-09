@@ -6,35 +6,16 @@ using UnityEngine;
 /// </summary>
 public sealed class ArmorPack : A_Support
 {
+    [Tooltip("The amount of damage reduction received by the armor pack.")]
+    [Range(0,100)]
+    [SerializeField] private float armorReductionPercentage;
     /// <summary>
-    /// Choose which effect to activate based on <paramref name="isEquippable"/> variable.
+    /// The damage reduction effect of the armor pack
     /// </summary>
     /// <param name="player"></param>
-    /// <param name="isEquippable"></param>
-    protected override void ActivateEffect(Player player)
+    public DamageQueryInfo ReduceDamage(DamageQueryInfo queryInfo)
     {
-        if (isEquippable)
-            EquipmentEffect(player);
-        else
-            InstantEffect(player);
-    }
-
-    /// <summary>
-    /// Instant effect of the HealthPack.
-    /// </summary>
-    /// <param name="player"></param>
-    private void InstantEffect(Player player)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    /// <summary>
-    /// Effect of the HealthPack support item. 
-    /// </summary>
-    /// <param name="player"></param>
-    private void EquipmentEffect(Player player)
-    {
-        throw new NotImplementedException();
+        queryInfo.damageAmount *= (100f - armorReductionPercentage) / 100f;
+        return queryInfo;
     }
 }
