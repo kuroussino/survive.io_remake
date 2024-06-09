@@ -20,7 +20,7 @@ public class LootBoxSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if (IsClient)
+        if (!IsServer)
             return;
         SpawnLootBoxes();
     }
