@@ -53,13 +53,14 @@ public class PickableInstance : NetworkBehaviour
     public void SetPrefabToSpawn(GameObject item, Sprite sprite)
     {
         prefabItem = item;
-        SetSpriteClientRpc();
+        int id = ItemID.Instance.GetID(sprite);
+        SetSpriteClientRpc(id);
         textItemPickUp.text = $"Equip {item.name}";
     }
     [ClientRpc]
-    void SetSpriteClientRpc()
+    void SetSpriteClientRpc(int id)
     {
-        spriteRenderer.sprite = ItemID.Instance.GetSprite(0);
+        spriteRenderer.sprite = ItemID.Instance.GetSprite(id);
     }
 
     /// <summary>

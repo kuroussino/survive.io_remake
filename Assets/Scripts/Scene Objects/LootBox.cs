@@ -32,6 +32,7 @@ public class LootBox : NetworkBehaviour, I_Damageable
             if (weapon == null && support == null)
                 continue;
             PickableInstance pick = Instantiate(pickable, transform.position, transform.rotation);
+            pick.GetComponent<NetworkObject>().Spawn();
             pick.SetPrefabToSpawn(weapon ? ((A_Weapon)item).gameObject : ((A_Support)item).gameObject, item.GetSpriteItem());
         }
         Destroy(gameObject);

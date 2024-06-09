@@ -462,6 +462,9 @@ MonoBehaviour:
   IsPersistent: 0
   sprites:
   - {fileID: 21300000, guid: 55241f46dbe04eb48ad081fb3523c7fc, type: 3}
+  - {fileID: 21300000, guid: ccc81ce8b16dd5940a8b3afa38e0703c, type: 3}
+  - {fileID: 21300000, guid: 5dcc7958990b58542af6473437551376, type: 3}
+  - {fileID: 21300000, guid: 07003a1606acc634f88c76420d75e7b7, type: 3}
 --- !u!4 &613020203
 Transform:
   m_ObjectHideFlags: 0
