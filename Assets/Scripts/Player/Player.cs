@@ -58,6 +58,12 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
         if (!IsControlledPlayer())
             return;
 
+        OnPlayerFireInputServerRpc(fire);
+    }
+
+    [ServerRpc]
+    private void OnPlayerFireInputServerRpc(bool fire)
+    {
         if (fire == isPressingFireInput)
             return;
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerPunch : NetworkBehaviour
 {
@@ -28,12 +29,19 @@ public class PlayerPunch : NetworkBehaviour
         isPunching = true;
         cachedCollider.enabled = true;
         transform.localScale = Vector3.one * 1.5f;
+        EditHandsScaleClientRpc(Vector3.one * 1.5f);
         yield return new WaitForSeconds(3);
 
         isPunching = false;
         cachedCollider.enabled = false;
         transform.localScale = Vector3.one;
+        EditHandsScaleClientRpc(Vector3.one);
+    }
 
+    [ClientRpc]
+    void EditHandsScaleClientRpc(Vector3 scale)
+    {
+        transform.localScale = scale;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
