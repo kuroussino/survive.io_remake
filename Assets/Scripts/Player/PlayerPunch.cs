@@ -38,6 +38,9 @@ public class PlayerPunch : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!IsServer)
+            return;
+
         I_Damageable damageable = collision.GetComponent<I_Damageable>();
         if (damageable == null)
             return;

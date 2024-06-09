@@ -20,7 +20,7 @@ public class LootBox : NetworkBehaviour, I_Damageable
         return new DamageResponseInfo();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     void SpawnItemServerRpc()
     {
         int maxItems = Random.Range(1, maxRangeItems + 1);
