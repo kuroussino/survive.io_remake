@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class LootBox : NetworkBehaviour, I_Damageable
 {
-    [SerializeField] PickableInstance pickable;   
+    [SerializeField] private PickableInstance pickable;   
     [SerializeField] private int maxRangeItems;
 
     public bool PermanentlyImmuneToDeathZone => true;
