@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestGameplay.unity
     guid: 626b63c53adacb44dac77e1e7b562925
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/PotenzaScene.unity
     guid: b47fdad23cf265d43820e3edba8a5e9e
   - enabled: 1
