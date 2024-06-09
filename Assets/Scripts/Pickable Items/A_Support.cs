@@ -10,8 +10,6 @@ public abstract class A_Support : MonoBehaviour, I_Item
 {
     [Header("Stats and Variables")]
     [Space(6)]
-    [Tooltip("Defines whether the item is equippable or has an instant effect")]
-    [SerializeField] protected bool isEquippable;
     [SerializeField] protected Sprite supportSprite;
 
     public Sprite GetSpriteItem()

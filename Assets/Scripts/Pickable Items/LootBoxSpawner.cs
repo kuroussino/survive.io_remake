@@ -31,8 +31,10 @@ public class LootBoxSpawner : NetworkBehaviour
     private void SpawnLootBoxes()
     {
         for(int i = 0; i < lootBoxSpawnPositions.Length; i++)
-            Instantiate(lootBoxPrefab, lootBoxSpawnPositions[i].position,Quaternion.identity);
-
+        {
+            NetworkObject lootBox = Instantiate(lootBoxPrefab, lootBoxSpawnPositions[i].position,Quaternion.identity).GetComponent<NetworkObject>();
+            lootBox.Spawn();
+        }
     }
     #endregion
 
