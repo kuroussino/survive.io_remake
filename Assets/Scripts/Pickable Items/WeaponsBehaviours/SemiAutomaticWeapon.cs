@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 /// <summary>
 /// <para><b>Weapon</b> that inherits from <c>A_Weapons</c>.</para> 

@@ -6,7 +6,7 @@ using UnityEngine;
 ///<para>Base abstract class for <b>Weapons</b></para>
 ///<remarks> P.S. Maybe add an Interface I_Weapon just to give an abstract implementation for the player?</remarks>
 /// </summary>
-public abstract class A_Weapon : NetworkBehaviour, I_Item
+public abstract class A_Weapon : MonoBehaviour, I_Item
 {
     protected I_DamageOwner owner;
     public void SetOwner(I_DamageOwner owner)
@@ -32,7 +32,7 @@ public abstract class A_Weapon : NetworkBehaviour, I_Item
     [Tooltip("If true, this weapon continues to fire when holding the button for firing.")]
     [SerializeField] protected bool holdForAutoFire;
     [Tooltip("The prefab of the bullet shooted by the weapon.")]
-    [SerializeField] protected GameObject bulletPrefab;
+    [SerializeField] protected BulletBehaviour bulletPrefab;
     [Tooltip("The prefab of the bullet shooted by the weapon.")]
     [SerializeField] protected Transform bulletSpawnPoint;
     [Tooltip("The appearence of the bullet shooted by the weapon.")]

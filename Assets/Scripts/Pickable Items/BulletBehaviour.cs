@@ -49,6 +49,7 @@ public class BulletBehaviour : NetworkBehaviour, I_DamageSource
         this.speed = data.speed;
         GetComponent<SpriteRenderer>().sprite = data.sprite;
         this.owner = data.source;
+        GetComponent<NetworkObject>().Spawn();
         Destroy(gameObject, data.range / speed);
     }
 }

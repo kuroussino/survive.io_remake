@@ -1,25 +1,22 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
-using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
 {
     public Action<A_Weapon> weaponEquipped;
-    public bool IsBareHanded => weapon == null;
+    public bool IsBareHanded => heldWeapon == null;
     //heal
     //armor
     //TryAbsorbDamage
-    A_Weapon weapon;
+    A_Weapon heldWeapon;
 
     public void OnFireInput()
     {
-        weapon?.Shoot();
+        heldWeapon?.Shoot();
     }
     public void OnReloadInput()
     {
-        weapon?.Reload();
+        heldWeapon?.Reload();
     }
     public bool TryGetItem(I_Item item)
     {
@@ -33,10 +30,16 @@ public class PlayerInventory : NetworkBehaviour
     }
     void SortWeapon(A_Weapon weapon)
     {
-        A_Weapon newWeapon = Instantiate(weapon);
-        this.weapon = newWeapon;
-        var instanceNetworkObject = newWeapon.GetComponent<NetworkObject>();
-        instanceNetworkObject.Spawn();
-        weaponEquipped?.Invoke(newWeapon);
+        int weaponID = ItemID.Instance.GetWeaponID(weapon);
+        CreateWeaponClientRpc(weaponID);
+    }
+
+    [ClientRpc]
+    void CreateWeaponClientRpc(int weaponID)
+    {
+        A_Weapon weaponPrefab = ItemID.Instance.GetWeaponItem<A_Weapon> (weaponID);
+        A_Weapon newWeapon = Instantiate(weaponPrefab);
+        heldWeapon = newWeapon;
+        weaponEquipped?.Invoke(heldWeapon);
     }
 }
