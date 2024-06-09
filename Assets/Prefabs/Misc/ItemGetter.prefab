@@ -47,7 +47,7 @@ MonoBehaviour:
   IsPersistent: 0
   weaponList:
   - {fileID: 4725551892698572546, guid: 38463ae820a2e2a4a897afc3b7197cc4, type: 3}
-  - {fileID: 4641130193470356526, guid: 871f9cd62485b77469ddc57b73200fe4, type: 3}
+  - {fileID: 6525918547395050275, guid: 871f9cd62485b77469ddc57b73200fe4, type: 3}
   suppportList:
-  - {fileID: 5532886540867570012, guid: 5e5e38d2508fc1f4889e30dbf29d8ad3, type: 3}
+  - {fileID: 381133358087358364, guid: 5e5e38d2508fc1f4889e30dbf29d8ad3, type: 3}
   - {fileID: 2444011304173118597, guid: c3157d55d87ef9943bf23de76401b801, type: 3}
