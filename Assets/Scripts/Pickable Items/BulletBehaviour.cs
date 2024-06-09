@@ -1,12 +1,12 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class BulletBehaviour : MonoBehaviour
+public class BulletBehaviour : NetworkBehaviour, I_DamageSource
 {
-    private I_DamageOwner source;
+    private I_DamageOwner owner;
     private float damage;
     private float speed;
     private Vector3 direction;
-
     /// <summary>
     /// 
     /// </summary>
@@ -20,12 +20,16 @@ public class BulletBehaviour : MonoBehaviour
     /// <param name="collision"></param> 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!IsServer)
+            return;
+
         if (collision.gameObject.TryGetComponent(out I_Damageable enemy))
         {
             DamageQueryInfo info = new DamageQueryInfo
             {
                 damageAmount = damage,
-                owner = source,
+                owner = owner,
+                source = this,
             };
             enemy.TakeDamage(info);
             Destroy(gameObject);
@@ -44,7 +48,7 @@ public class BulletBehaviour : MonoBehaviour
         this.damage = data.damage;
         this.speed = data.speed;
         GetComponent<SpriteRenderer>().sprite = data.sprite;
-        this.source = data.source;
+        this.owner = data.source;
         Destroy(gameObject, data.range / speed);
     }
 }

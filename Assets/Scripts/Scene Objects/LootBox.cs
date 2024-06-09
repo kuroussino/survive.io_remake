@@ -8,7 +8,6 @@ public class LootBox : NetworkBehaviour, I_Damageable
 {
     [SerializeField] private PickableInstance pickable;   
     [SerializeField] private int maxRangeItems;
-
     public bool PermanentlyImmuneToDeathZone => true;
 
     public override void OnNetworkSpawn()
@@ -16,6 +15,13 @@ public class LootBox : NetworkBehaviour, I_Damageable
         base.OnNetworkSpawn();
     }
     public DamageResponseInfo TakeDamage(DamageQueryInfo info)
+    {
+        SpawnItemServerRpc();
+        return new DamageResponseInfo();
+    }
+
+    [ServerRpc]
+    void SpawnItemServerRpc()
     {
         int maxItems = Random.Range(1, maxRangeItems + 1);
         for (int i = 0; i < maxItems; i++)
@@ -29,6 +35,5 @@ public class LootBox : NetworkBehaviour, I_Damageable
             pick.SetPrefabToSpawn(weapon ? ((A_Weapon)item).gameObject : ((A_Support)item).gameObject, item.GetSpriteItem());
         }
         Destroy(gameObject);
-        return new DamageResponseInfo();
     }
 }

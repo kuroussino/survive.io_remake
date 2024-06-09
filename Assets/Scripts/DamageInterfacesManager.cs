@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public interface I_DamageOwner
+public class DamageInterfacesManager : NetworkBehaviour
 {
 }
