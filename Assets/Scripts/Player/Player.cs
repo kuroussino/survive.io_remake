@@ -37,6 +37,11 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
         EventsManager.playerFireInput -= OnPlayerFireInput;
         inventory.weaponEquipped += OnWeaponEquipped;
     }
+    private void Start()
+    {
+        if(IsOwner)
+            EventsManager.changePlayerCameraTarget?.Invoke(transform);
+    }
     #endregion
 
     #region Input
