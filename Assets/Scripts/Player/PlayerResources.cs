@@ -22,7 +22,6 @@ public class PlayerResources : MonoBehaviour
         if (damageAmount > 0)
             return;
 
-        EventsManager.OnPlayerDamage?.Invoke(damageAmount);
         float newHealth = CurrentHealth - damageAmount;
         newHealth = Mathf.Clamp(newHealth, 0, MaxHealth);
         if(newHealth <= 0)

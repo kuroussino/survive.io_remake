@@ -53,11 +53,15 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if (!IsOwner)
-            return;
-
-        EventsManager.changePlayerCameraTarget?.Invoke(transform);
-        EventsManager.PlayerUIInitialize?.Invoke(resources.MaxHealth, 1, null);
+        if (IsOwner)
+        {
+            EventsManager.changePlayerCameraTarget?.Invoke(transform);
+            EventsManager.PlayerUIInitialize?.Invoke(resources.MaxHealth, 1, null);
+        }
+        if (IsServer)
+        {
+            EventsManager.playerJoinedBattle?.Invoke(this);
+        }
     }
     #endregion
 
@@ -130,10 +134,23 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
             return responseInfo;
         }
 
+        if (inventory != null)
+            info = inventory.AbsorbDamage(info);
+
         responseInfo.attackAbsorbed = true;
-        Debug.Log($"{name} took damage!");
         resources?.TakeDirectDamage(info.damageAmount);
+        TakeDamageClientRpc(info.damageAmount);
         return responseInfo;
+    }
+
+    [ClientRpc]
+    public void TakeDamageClientRpc(float totalDamage)
+    {
+        if (!IsOwner)
+            return;
+        
+        Debug.Log($"{name} took damage!");
+        EventsManager.OnPlayerDamage?.Invoke(totalDamage);
     }
     public bool TryCollectItem(I_Item item)
     {
@@ -149,6 +166,14 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
     }
     private void OnPlayerDeath()
     {
+        EventsManager.playerDeath?.Invoke(this);
+        OnPlayerDeathClientRpc();
+        Destroy(gameObject);
+    }
+    [ClientRpc]
+    void OnPlayerDeathClientRpc()
+    {
+        if(!IsOwner) return;
         EventsManager.OnPlayerDead?.Invoke();
     }
 }
