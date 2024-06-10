@@ -86,7 +86,6 @@ public class PickableInstance : NetworkBehaviour
             return;
 
         GetItem(player);
-        ActivateUI();
     }
 
     private void OnTriggerExit2D(Collider2D collision) 

@@ -17,7 +17,9 @@ public class LootBox : NetworkBehaviour, I_Damageable
     public DamageResponseInfo TakeDamage(DamageQueryInfo info)
     {
         SpawnItemServerRpc();
-        return new DamageResponseInfo();
+        DamageResponseInfo response = new DamageResponseInfo();
+        response.attackAbsorbed = true;
+        return response;
     }
 
     [ServerRpc]
@@ -33,7 +35,7 @@ public class LootBox : NetworkBehaviour, I_Damageable
                 continue;
             PickableInstance pick = Instantiate(pickable, transform.position, transform.rotation);
             pick.GetComponent<NetworkObject>().Spawn();
-            pick.SetPrefabToSpawn(weapon ? ((A_Weapon)item).gameObject : ((A_Support)item).gameObject, item.GetSpriteItem());
+            pick.SetPrefabToSpawn(weapon != null ? ((A_Weapon)item).gameObject : ((A_Support)item).gameObject, item.GetSpriteItem());
         }
         Destroy(gameObject);
     }
