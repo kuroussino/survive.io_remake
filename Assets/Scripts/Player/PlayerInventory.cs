@@ -43,6 +43,7 @@ public class PlayerInventory : NetworkBehaviour
             if (this.armorPack == null)
             {
                 this.armorPack = armorPack;
+                EventsManager.OnGetArmor?.Invoke();
                 return true;
             }
             return false;

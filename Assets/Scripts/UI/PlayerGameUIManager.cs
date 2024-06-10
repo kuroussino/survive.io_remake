@@ -18,6 +18,7 @@ public class PlayerGameUIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI healthPackNumber;
     [SerializeField] TextMeshProUGUI currentBulletsText;
     [SerializeField] TextMeshProUGUI playerCountText;
+    [SerializeField] Image armorImage;
 
     [Space(10)]
     [Header("Notification UI")]
@@ -26,6 +27,7 @@ public class PlayerGameUIManager : MonoBehaviour
     [SerializeField] Color notificationColor;
 
     #endregion
+
     #region Variables
     private float maxHP;
     private float currentHP;
@@ -63,6 +65,7 @@ public class PlayerGameUIManager : MonoBehaviour
         EventsManager.OnNotificatePlayer += OnNotificationText;
         EventsManager.OnPlayerUseHealthPack += OnUseHealthPack;
         EventsManager.OnUpdatePlayerCount += UpdatePlayerCount;
+        EventsManager.OnGetArmor += OnGetArmor;
     }
     private void OnDisable()
     {
@@ -76,6 +79,7 @@ public class PlayerGameUIManager : MonoBehaviour
         EventsManager.OnNotificatePlayer -= OnNotificationText;
         EventsManager.OnPlayerUseHealthPack -= OnUseHealthPack;
         EventsManager.OnUpdatePlayerCount -= UpdatePlayerCount;
+        EventsManager.OnGetArmor -= OnGetArmor;
     }
 
     #endregion
@@ -94,6 +98,7 @@ public class PlayerGameUIManager : MonoBehaviour
         playerHPSlider.value = maxHP;
         currentBullets = 0;
         notificationText.gameObject.SetActive(false);
+        armorImage.enabled = false;
         OnWeaponUpdateBullets(currentBullets);
         UpdateHealthPackNumber(0);
         UpdatePrimaryWeaponUI();
@@ -230,6 +235,13 @@ public class PlayerGameUIManager : MonoBehaviour
         {
             playerHPSlider.fillRect.GetComponent<Image>().color = Color.red;
         }
+    }
+    /// <summary>
+    /// Method called by event to get armor shown in UI 
+    /// </summary>
+    private void OnGetArmor()
+    {
+        armorImage.enabled = true;
     }
     /// <summary>
     /// This method is called by an event on local player death
