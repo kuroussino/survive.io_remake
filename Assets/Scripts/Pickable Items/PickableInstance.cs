@@ -10,8 +10,8 @@ using UnityEngine;
 public class PickableInstance : NetworkBehaviour
 {
     [SerializeField] private TextMeshProUGUI textItemPickUp;
-    private GameObject prefabItem;
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private GameObject prefabItem;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     
     [SerializeField] private float speedSliding;
     /// <summary>
@@ -20,6 +20,7 @@ public class PickableInstance : NetworkBehaviour
     protected void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = prefabItem.GetComponent<I_Item>().GetSpriteItem();
     }
 
     //public override void OnNetworkSpawn()

@@ -8,32 +8,25 @@ public class PlayerPunch : NetworkBehaviour
 {
     UnifiedDamageSource unifiedDamageSource;
     bool isPunching;
-    Collider2D cachedCollider;
-    private void Awake()
-    {
-        cachedCollider = GetComponent<Collider2D>();
-        cachedCollider.enabled = false;
-    }
     public void Punch(UnifiedDamageSource unifiedDamageSource)
     {
-        this.unifiedDamageSource = unifiedDamageSource;
-        StartCoroutine(PunchCoroutine());
+        StartCoroutine(PunchCoroutine(unifiedDamageSource));
     }
-    IEnumerator PunchCoroutine()
+    IEnumerator PunchCoroutine(UnifiedDamageSource unifiedDamageSource)
     {
         if (isPunching)
             yield break;
 
+
+        this.unifiedDamageSource = unifiedDamageSource;
         EventsManager.resetAlreadyHitTargets?.Invoke(unifiedDamageSource);
 
         isPunching = true;
-        cachedCollider.enabled = true;
         transform.localScale = Vector3.one * 1.5f;
         EditHandsScaleClientRpc(Vector3.one * 1.5f);
         yield return new WaitForSeconds(3);
 
         isPunching = false;
-        cachedCollider.enabled = false;
         transform.localScale = Vector3.one;
         EditHandsScaleClientRpc(Vector3.one);
     }
@@ -47,6 +40,9 @@ public class PlayerPunch : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!IsServer)
+            return;
+
+        if (!isPunching)
             return;
 
         I_Damageable damageable = collision.GetComponent<I_Damageable>();

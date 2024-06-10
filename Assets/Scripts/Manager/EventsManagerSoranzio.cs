@@ -50,6 +50,8 @@ public static partial class EventsManager
     public static Action<object> OnNotificatePlayer;
     //Event is called by the server, in order to execute for every client, when a player dies and the players alive needs to be updated. As parameter use the player left in the game.
     public static Action<int> OnUpdatePlayerCount;
+    //Event is called when the player gets the armor on.
+    public static Action OnGetArmor;
     //Can add killfeed? 
     #endregion
 }
