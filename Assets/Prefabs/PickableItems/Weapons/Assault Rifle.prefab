@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8842553501563743998}
   - component: {fileID: 4725551892698572546}
   - component: {fileID: 8389689593491966545}
-  - component: {fileID: 5639574957867512784}
   m_Layer: 0
   m_Name: Assault Rifle
   m_TagString: Untagged
@@ -27,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6525918547395050275}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.6390567, w: 0.7691597}
+  m_LocalPosition: {x: 2.9062653, y: 1.4635239, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -54,7 +53,7 @@ MonoBehaviour:
   cooldownShotsTime: 1
   bulletSpeed: 10
   holdForAutoFire: 1
-  bulletPrefab: {fileID: 5881102311739333002, guid: 135203b8572ddbb40a6725d9408b05f6, type: 3}
+  bulletPrefab: {fileID: -3268253877646054626, guid: 135203b8572ddbb40a6725d9408b05f6, type: 3}
   bulletSpawnPoint: {fileID: 5080775521263037087}
   bulletSprite: {fileID: -2413806693520163455, guid: c734686e14afb2b42bf112c1e5ed6b86, type: 3}
   shootSound: {fileID: 0}
@@ -114,26 +113,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5639574957867512784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6525918547395050275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &7100849539705726616
 GameObject:
   m_ObjectHideFlags: 0

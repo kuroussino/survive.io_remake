@@ -260,6 +260,106 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!1 &49668685
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 49668686}
+  m_Layer: 0
+  m_Name: LootBoxSpawn (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &49668686
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49668685}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 5.63, y: -7.53, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 342045709}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &263943499
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 263943500}
+  m_Layer: 0
+  m_Name: LootBoxSpawn (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &263943500
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263943499}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 12.809999, y: -7.53, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 342045709}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &342045708
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 342045709}
+  m_Layer: 0
+  m_Name: LootBoxesSpawns
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &342045709
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342045708}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.14, y: 3.23, z: 1.7388096}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2027088027}
+  - {fileID: 1840975423}
+  - {fileID: 1600891111}
+  - {fileID: 263943500}
+  - {fileID: 49668686}
+  - {fileID: 2056851307}
+  - {fileID: 1465973783}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &565497057
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,8 +406,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 1253339523}
-  pickablePrefab: {fileID: 0}
-  itembox: {fileID: 1257808907}
+  itembox: {fileID: 0}
 --- !u!1 &1144383056
 GameObject:
   m_ObjectHideFlags: 0
@@ -518,18 +617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65b503d87e7345d45b32c06fb0cccc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1257808907 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6854275614299122092, guid: de3490b99e5064d47b0398373e01775a, type: 3}
-  m_PrefabInstance: {fileID: 5150235021092052285}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7613958d6f3e53469401109669f12c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &1627599409
+--- !u!1 &1465973782
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -537,49 +625,154 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1627599410}
-  - component: {fileID: 1627599411}
+  - component: {fileID: 1465973783}
   m_Layer: 0
-  m_Name: ItemManager
+  m_Name: LootBoxSpawn (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1627599410
+--- !u!4 &1465973783
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1627599409}
+  m_GameObject: {fileID: 1465973782}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.30145508, y: 0.13929296, z: 0.015483878}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 342045709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1627599411
-MonoBehaviour:
+--- !u!1 &1600891110
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1627599409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9052f1633929b9e4688f997b4a5856a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsPersistent: 0
-  weaponList:
-  - {fileID: 6525918547395050275, guid: 871f9cd62485b77469ddc57b73200fe4, type: 3}
-  - {fileID: 6525918547395050275, guid: 38463ae820a2e2a4a897afc3b7197cc4, type: 3}
-  suppportList:
-  - {fileID: 381133358087358364, guid: 5e5e38d2508fc1f4889e30dbf29d8ad3, type: 3}
---- !u!1001 &5150235021092052285
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1600891111}
+  m_Layer: 0
+  m_Name: LootBoxSpawn (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1600891111
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1600891110}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 12.809999, y: -3.6866922, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 342045709}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1840975422
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1840975423}
+  m_Layer: 0
+  m_Name: LootBoxSpawn (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1840975423
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840975422}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 8.219999, y: -3.6866922, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 342045709}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2027088026
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2027088027}
+  m_Layer: 0
+  m_Name: LootBoxSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2027088027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027088026}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.4070172, y: -3.6866922, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 342045709}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2056851306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2056851307}
+  m_Layer: 0
+  m_Name: LootBoxSpawn (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2056851307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056851306}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -7.53, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 342045709}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1962835951896194244
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -587,51 +780,47 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3310788262690636991, guid: de3490b99e5064d47b0398373e01775a, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 531929718
-      objectReference: {fileID: 0}
-    - target: {fileID: 3497504167438950420, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 3949157832902893676, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_Name
-      value: ItemBox
+      value: ItemGetter
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.5
+      value: -0.30145508
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.01
+      value: 0.13929296
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.015483878
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8154420276640573220, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+    - target: {fileID: 5821653325275576651, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
@@ -639,7 +828,100 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: de3490b99e5064d47b0398373e01775a, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 8ebe2c191aba3064da844eee2cbfdcc8, type: 3}
+--- !u!1001 &5849509004909659119
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.data[0]
+      value: 
+      objectReference: {fileID: 2027088027}
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.data[1]
+      value: 
+      objectReference: {fileID: 1840975423}
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.data[2]
+      value: 
+      objectReference: {fileID: 1600891111}
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.data[3]
+      value: 
+      objectReference: {fileID: 263943500}
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.data[4]
+      value: 
+      objectReference: {fileID: 49668686}
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.data[5]
+      value: 
+      objectReference: {fileID: 2056851307}
+    - target: {fileID: 593647989443972954, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: lootBoxSpawnPositions.Array.data[6]
+      value: 
+      objectReference: {fileID: 1465973783}
+    - target: {fileID: 5103741793335748104, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_Name
+      value: LootBoxSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 7257672153734950065, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2822542258
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 35.300713
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 125.448044
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.31684625
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434582850071561372, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2de00369ccf23ed4d883fbd0e5db5c60, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -647,5 +929,6 @@ SceneRoots:
   - {fileID: 18541047}
   - {fileID: 1144383057}
   - {fileID: 565497058}
-  - {fileID: 1627599410}
-  - {fileID: 5150235021092052285}
+  - {fileID: 1962835951896194244}
+  - {fileID: 5849509004909659119}
+  - {fileID: 342045709}

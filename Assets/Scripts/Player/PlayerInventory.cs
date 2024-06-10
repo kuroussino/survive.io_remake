@@ -1,40 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
+using Unity.Netcode;
 
-public class PlayerInventory : MonoBehaviour
+public class PlayerInventory : NetworkBehaviour
 {
+    public Action<A_Weapon> weaponEquipped;
+    public bool IsBareHanded => heldWeapon == null;
     //heal
     //armor
     //TryAbsorbDamage
-    A_Weapon weapon;
+    A_Weapon heldWeapon;
 
     public void OnFireInput()
     {
-        weapon?.Shoot();
+        heldWeapon?.Shoot();
     }
     public void OnReloadInput()
     {
-        weapon?.Reload();
+        heldWeapon?.Reload();
     }
-    public void TryGetItem(I_Item item, out EquipmentData equipmentData)
+    public bool TryGetItem(I_Item item)
     {
-        equipmentData = new EquipmentData();
         A_Weapon weapon = item as A_Weapon;
         if(weapon != null)
         {
             SortWeapon(weapon);
-            equipmentData.weapon = weapon;
-            return;
+            return true;
         }
+        return false;
     }
     void SortWeapon(A_Weapon weapon)
     {
-        this.weapon = weapon;
+        int weaponID = ItemID.Instance.GetWeaponID(weapon);
+        CreateWeaponClientRpc(weaponID);
     }
-}
 
-public class EquipmentData
-{
-    public A_Weapon weapon;
+    [ClientRpc]
+    void CreateWeaponClientRpc(int weaponID)
+    {
+        A_Weapon weaponPrefab = ItemID.Instance.GetWeaponItem<A_Weapon> (weaponID);
+        A_Weapon newWeapon = Instantiate(weaponPrefab);
+        heldWeapon = newWeapon;
+        weaponEquipped?.Invoke(heldWeapon);
+    }
 }

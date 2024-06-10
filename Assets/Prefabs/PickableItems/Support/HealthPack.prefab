@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8551525114357861177}
   - component: {fileID: 5532886540867570012}
+  - component: {fileID: -7735117564910168174}
   m_Layer: 0
   m_Name: HealthPack
   m_TagString: Untagged
@@ -44,6 +45,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f381609f7a4fb439f0d529a5e212b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isEquippable: 0
   supportSprite: {fileID: 21300000, guid: 55241f46dbe04eb48ad081fb3523c7fc, type: 3}
-  amountHealthHealed: 0
+  amountHealthHealed: 20
+--- !u!114 &-7735117564910168174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381133358087358364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

@@ -34,7 +34,7 @@ public class PickableInstance : NetworkBehaviour
     }
 
     /// <summary>
-    /// Should be calling the implementation of a method of the I_Item interface, because every item must know how to behave when equipped.
+    /// 
     /// </summary>
     public void GetItem(Player player) 
     {
@@ -53,8 +53,14 @@ public class PickableInstance : NetworkBehaviour
     public void SetPrefabToSpawn(GameObject item, Sprite sprite)
     {
         prefabItem = item;
-        spriteRenderer.sprite = sprite;
+        int id = ItemID.Instance.GetSpriteID(sprite);
+        SetSpriteClientRpc(id);
         textItemPickUp.text = $"Equip {item.name}";
+    }
+    [ClientRpc]
+    void SetSpriteClientRpc(int id)
+    {
+        spriteRenderer.sprite = ItemID.Instance.GetSpriteItem<Sprite>(id);
     }
 
     /// <summary>
@@ -75,6 +81,11 @@ public class PickableInstance : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision) 
     {
+        Player player = collision.GetComponent<Player>();
+        if (player == null)
+            return;
+
+        GetItem(player);
         ActivateUI();
     }
 

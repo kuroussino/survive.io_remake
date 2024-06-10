@@ -1,7 +1,6 @@
 using CI.PowerConsole;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Services.Lobbies;
@@ -290,31 +289,35 @@ public class LobbyUIManager : MonoBehaviour
     /// <param name="lobby"></param>
     private void OnShowingLobby(Lobby lobby, bool isHostVar)
     {
-        lobbyHubUI.SetActive(true);
-        LobbySearchOrCreateUI.SetActive(false);
-        if(isHostVar)
+        if(lobbyHubUI != null)
         {
-            startGameButton.SetActive(true);
+            lobbyHubUI.SetActive(true);
+            LobbySearchOrCreateUI.SetActive(false);
+            if (isHostVar)
+            {
+                startGameButton.SetActive(true);
+            }
+            else
+            {
+                startGameButton.SetActive(false);
+            }
+            GameObject playerUI;
+            GameObject[] panels = GameObject.FindGameObjectsWithTag("PlayerUI");
+            foreach (GameObject p in panels)
+            {
+                Destroy(p);
+            }
+            counterPlayers.text = lobby.Players.Count.ToString() + "/" + lobby.MaxPlayers.ToString();
+            lobbyNamePreLobby.text = lobby.Name;
+            foreach (Unity.Services.Lobbies.Models.Player player in lobby.Players)
+            {
+                PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"player name is {player.Data["PlayerName"].Value}");
+                playerUI = Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
+                playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player, lobbyManager.isHost(player.Id));
+                playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
+            }
         }
-        else
-        {
-            startGameButton.SetActive(false);
-        }
-        GameObject playerUI;
-        GameObject[] panels = GameObject.FindGameObjectsWithTag("PlayerUI");
-        foreach (GameObject p in panels)
-        {
-            Destroy(p);
-        }
-        counterPlayers.text= lobby.Players.Count.ToString()+"/"+lobby.MaxPlayers.ToString();
-        lobbyNamePreLobby.text = lobby.Name;
-        foreach (Unity.Services.Lobbies.Models.Player player in lobby.Players)
-        {
-            PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"player name is {player.Data["PlayerName"].Value}");
-            playerUI = Instantiate(playerLobbyUI, verticalLobbyLayoutUI.transform);
-            playerUI.GetComponent<LobbyPlayerUI>().UpdatePlayerUI(player, lobbyManager.isHost(player.Id));
-            playerShowedInUIList.Add(playerUI.GetComponent<LobbyPlayerUI>());
-        }
+        
 
     }
 
@@ -328,8 +331,11 @@ public class LobbyUIManager : MonoBehaviour
        {
             if (playerShowedInUIList[i].playerID == player.Id)
             {
-                playerShowedInUIList[i].RemovePlayer();
-                return;
+                if (playerShowedInUIList[i] != null)
+                {
+                    playerShowedInUIList[i].RemovePlayer();
+                    return;
+                }
             }
        }
     }
@@ -356,7 +362,6 @@ public class LobbyUIManager : MonoBehaviour
 
     public void OnClickStartGame()
     {
-
         EventsManager.OnHostStartGame?.Invoke();
     }
 

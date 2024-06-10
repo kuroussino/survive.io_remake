@@ -30,7 +30,9 @@ public class Desi_Debug : MonoBehaviour
         }
         if(itembox != null)
         {
-            itembox.TakeDamage(20);
+            DamageQueryInfo info = new DamageQueryInfo();
+            info.damageAmount = 20;
+            itembox.TakeDamage(info);
         }
     }
 }

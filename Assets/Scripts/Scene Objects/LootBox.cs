@@ -6,17 +6,22 @@ using UnityEngine;
 /// </summary>
 public class LootBox : NetworkBehaviour, I_Damageable
 {
-    [SerializeField] PickableInstance pickable;   
+    [SerializeField] private PickableInstance pickable;   
     [SerializeField] private int maxRangeItems;
-
     public bool PermanentlyImmuneToDeathZone => true;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
     }
+    public DamageResponseInfo TakeDamage(DamageQueryInfo info)
+    {
+        SpawnItemServerRpc();
+        return new DamageResponseInfo();
+    }
 
-    public void TakeDamage(float damageAmount)
+    [ServerRpc]
+    void SpawnItemServerRpc()
     {
         int maxItems = Random.Range(1, maxRangeItems + 1);
         for (int i = 0; i < maxItems; i++)
@@ -27,6 +32,7 @@ public class LootBox : NetworkBehaviour, I_Damageable
             if (weapon == null && support == null)
                 continue;
             PickableInstance pick = Instantiate(pickable, transform.position, transform.rotation);
+            pick.GetComponent<NetworkObject>().Spawn();
             pick.SetPrefabToSpawn(weapon ? ((A_Weapon)item).gameObject : ((A_Support)item).gameObject, item.GetSpriteItem());
         }
         Destroy(gameObject);

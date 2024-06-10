@@ -19,4 +19,8 @@ public static partial class EventsManager
     public static Action<Transform> changePlayerCameraTarget;
 
     public static Func<Player, bool> isOwnerPlayer;
+
+    public static Func<Player, Transform> getSpawnPosition;
+    public static Func<I_DamageSource, I_Damageable, bool> sourceHasAlreadyHitDamageable;
+    public static Action<I_DamageSource> resetAlreadyHitTargets;
 }

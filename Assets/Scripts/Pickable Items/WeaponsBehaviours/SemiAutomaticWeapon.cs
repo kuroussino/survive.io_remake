@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 /// <summary>
 /// <para><b>Weapon</b> that inherits from <c>A_Weapons</c>.</para> 
@@ -8,7 +9,15 @@ public sealed class SemiAutomaticWeapon : A_Weapon
     protected override void ShootEffect()
     {
         var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.rotation).GetComponent<BulletBehaviour>();
-        bullet.SetDataBulletFromWeapon(damage, bulletSpeed, range, bulletSprite);
+        BulletData bulletData = new BulletData
+        {
+            damage = damage,
+            speed = bulletSpeed,
+            range = range,
+            sprite = bulletSprite,
+            source = owner
+        };
+        bullet.SetDataBulletFromWeapon(bulletData);
         Debug.Log("Shoot");
         currentNumberAmmoMagazine--;
         EventsManager.WeaponUpdateBullets?.Invoke(currentNumberAmmoMagazine);

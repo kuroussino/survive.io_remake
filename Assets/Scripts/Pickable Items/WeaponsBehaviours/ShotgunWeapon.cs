@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 
@@ -19,8 +20,16 @@ public sealed class ShotgunWeapon : A_Weapon
     {
         for (float i = 0; i <= numberOfBulletsPerShoot; i++) {
             Quaternion randomnessVector = Quaternion.Euler(0, 0, Random.Range(-randomAngleBullets, randomAngleBullets));
-            var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.rotation * randomnessVector).GetComponent<BulletBehaviour>();
-            bullet.SetDataBulletFromWeapon(damage, bulletSpeed, range, bulletSprite);
+            BulletBehaviour bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, transform.rotation * randomnessVector).GetComponent<BulletBehaviour>();
+            BulletData bulletData = new BulletData
+            {
+                damage = damage,
+                speed = bulletSpeed,
+                range = range,
+                sprite = bulletSprite,
+                source = owner
+            };
+            bullet.SetDataBulletFromWeapon(bulletData);
             Debug.Log("Shoot");
         }
         currentNumberAmmoMagazine -= numberOfBulletsPerShoot;

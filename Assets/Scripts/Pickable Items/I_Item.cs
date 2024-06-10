@@ -6,5 +6,4 @@ using UnityEngine;
 public interface I_Item
 {
     public Sprite GetSpriteItem();
-    //public void EquippedItemEffect();
 }
