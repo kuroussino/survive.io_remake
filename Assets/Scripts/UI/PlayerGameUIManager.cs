@@ -18,6 +18,7 @@ public class PlayerGameUIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI healthPackNumber;
     [SerializeField] TextMeshProUGUI currentBulletsText;
     [SerializeField] TextMeshProUGUI playerCountText;
+    [SerializeField] Image armorImage;
 
     [Space(10)]
     [Header("Notification UI")]
@@ -33,8 +34,6 @@ public class PlayerGameUIManager : MonoBehaviour
     private int currentHealthPacks;
     private A_Weapon currentWeapon;
     private Coroutine notificationCoroutine;
-    [Tooltip("If set to true it will initialize the UI without any event, showin how would the UI look at the start of the game")]
-    [SerializeField]bool debug=false;
     [Tooltip("Seconds needed to make the text of notification disappear")]
     [SerializeField] private float notificationMessageDisappear;
     #endregion
@@ -52,6 +51,7 @@ public class PlayerGameUIManager : MonoBehaviour
         EventsManager.OnNotificatePlayer += OnNotificationText;
         EventsManager.OnPlayerUseHealthPack += OnUseHealthPack;
         EventsManager.OnUpdatePlayerCount += UpdatePlayerCount;
+        EventsManager.OnGetArmor += OnGetArmor;
     }
     private void OnDisable()
     {
@@ -65,6 +65,7 @@ public class PlayerGameUIManager : MonoBehaviour
         EventsManager.OnNotificatePlayer -= OnNotificationText;
         EventsManager.OnPlayerUseHealthPack -= OnUseHealthPack;
         EventsManager.OnUpdatePlayerCount -= UpdatePlayerCount;
+        EventsManager.OnGetArmor -= OnGetArmor;
     }
 
     #endregion
@@ -83,6 +84,7 @@ public class PlayerGameUIManager : MonoBehaviour
         playerHPSlider.value = maxHP;
         currentBullets = 0;
         notificationText.gameObject.SetActive(false);
+        armorImage.gameObject.SetActive(false);
         OnWeaponUpdateBullets(currentBullets);
         UpdateHealthPackNumber(0);
         UpdatePrimaryWeaponUI();
@@ -217,6 +219,11 @@ public class PlayerGameUIManager : MonoBehaviour
         yield return new WaitForSeconds(notificationMessageDisappear);
         notificationText.gameObject.SetActive(false);
     }
+    private void OnGetArmor()
+    {
+        armorImage.gameObject.SetActive(true);
+    }
+
     /// <summary>
     /// This method is called by an event on local player death
     /// </summary>
