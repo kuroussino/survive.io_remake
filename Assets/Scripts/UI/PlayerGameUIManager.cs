@@ -9,7 +9,8 @@ public class PlayerGameUIManager : MonoBehaviour
     #region Player UI var
     [Space(5)]
     [Header("Player UI")]
-    [SerializeField] GameObject playerUI;
+    [SerializeField] GameObject playerAliveUI;
+    [SerializeField] GameObject playerDeathUI;
     [SerializeField] TextMeshProUGUI scopeTextUI;
     [SerializeField] Slider playerHPSlider;
     [SerializeField] Image PrimaryWeaponSprite;
@@ -31,9 +32,25 @@ public class PlayerGameUIManager : MonoBehaviour
     private int currentBullets;
     private int currentHealthPacks;
     private A_Weapon currentWeapon;
+    private Coroutine notificationCoroutine;
+    [Tooltip("If set to true it will initialize the UI without any event, showin how would the UI look at the start of the game")]
+    [SerializeField]bool debug=false;
+    [Tooltip("Seconds needed to make the text of notification disappear")]
+    [SerializeField] private float notificationMessageDisappear;
     #endregion
 
     #region Mono
+    private void Start()
+    {
+#if !UNITY_EDITOR
+        debugMode = false;
+#endif
+        if (debug)
+        {
+            InitPlayerUI(100, 1, currentWeapon);
+        }
+
+    }
     private void OnEnable()
     {
         EventsManager.PlayerUIInitialize += InitPlayerUI;
@@ -69,12 +86,17 @@ public class PlayerGameUIManager : MonoBehaviour
     /// </summary>
     private void InitPlayerUI(float maxHP,int scope,A_Weapon weapon)
     {
-        playerUI.SetActive(true);
+        playerAliveUI.SetActive(true);
+        playerDeathUI.SetActive(false);
         playerHPSlider.maxValue = maxHP;
         playerHPSlider.value = maxHP;
         playerHPSlider.minValue= 0;
-        currentHealthPacks = 0;
-        currentWeapon = weapon;
+        playerHPSlider.value = maxHP;
+        currentBullets = 0;
+        notificationText.gameObject.SetActive(false);
+        OnWeaponUpdateBullets(currentBullets);
+        UpdateHealthPackNumber(0);
+        UpdatePrimaryWeaponUI();
     }
     /// <summary>
     /// This method is called by an event when the local player take damage
@@ -114,8 +136,23 @@ public class PlayerGameUIManager : MonoBehaviour
     /// <param name="weapon"></param>
     private void UpdatePrimaryWeaponUI()
     {
-        PrimaryWeaponName.text = currentWeapon.name;
-        PrimaryWeaponSprite.sprite = currentWeapon.GetSpriteItem();
+        if (currentWeapon != null)
+        {
+            Color spritecolor = PrimaryWeaponSprite.color;
+            spritecolor.a = 1;
+            PrimaryWeaponSprite.color = spritecolor;
+            PrimaryWeaponName.text = currentWeapon.name;
+            PrimaryWeaponSprite.sprite = currentWeapon.GetSpriteItem();
+        }
+        else
+        {
+            Color spritecolor = PrimaryWeaponSprite.color;
+            PrimaryWeaponName.text = "";
+            PrimaryWeaponSprite.sprite = null;
+            spritecolor.a= 0;
+            PrimaryWeaponSprite.color = spritecolor;
+        }
+
     }
     /// <summary>
     /// This method is called when shooting/reloading or grabbing a new gun with a new number of bullets
@@ -163,6 +200,21 @@ public class PlayerGameUIManager : MonoBehaviour
     {
         notificationText.text = message.ToString();
         notificationText.color = notificationColor;
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+        }
+        notificationCoroutine = StartCoroutine(NotificationDisappearing());
+    }
+    /// <summary>
+    /// Coroutine that will make the text disappear, will refresh when called again
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator NotificationDisappearing()
+    {
+        notificationText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(notificationMessageDisappear);
+        notificationText.gameObject.SetActive(false);
     }
     /// <summary>
     /// The moethod is called when taking or healing damage in order to check if the player is lowHealth or not.
@@ -184,7 +236,8 @@ public class PlayerGameUIManager : MonoBehaviour
     /// </summary>
     private void OnPlayerDeath()
     {
-        playerUI.SetActive(false);
+        playerAliveUI.SetActive(false);
+        playerDeathUI.SetActive(true);
     }
     
     #endregion
