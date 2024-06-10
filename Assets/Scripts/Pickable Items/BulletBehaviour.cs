@@ -31,8 +31,10 @@ public class BulletBehaviour : NetworkBehaviour, I_DamageSource
                 owner = owner,
                 source = this,
             };
-            enemy.TakeDamage(info);
-            Destroy(gameObject);
+            DamageResponseInfo response = enemy.TakeDamage(info);
+
+            if(response.attackAbsorbed)
+                Destroy(gameObject);
         }
            
     }

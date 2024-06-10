@@ -23,4 +23,7 @@ public static partial class EventsManager
     public static Func<Player, Transform> getSpawnPosition;
     public static Func<I_DamageSource, I_Damageable, bool> sourceHasAlreadyHitDamageable;
     public static Action<I_DamageSource> resetAlreadyHitTargets;
+
+    public static Action<Player> playerJoinedBattle;
+    public static Action<Player> playerDeath;
 }

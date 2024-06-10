@@ -22,7 +22,7 @@ public abstract class A_Weapon : MonoBehaviour, I_Item
     [Tooltip("Range in Units/m where the bullets gets destroyed.")]
     [SerializeField] protected float range; // To check with the bullet speed, in order to work well
     [Tooltip("Number of ammos before reloading the weapon.")]
-    [SerializeField] protected int numberAmmoMagazine;
+    [SerializeField] private int numberAmmoMagazine;
     [Tooltip("Cooldown in seconds before the weapon can shoot again after the ammo magazine went empty.")]
     [SerializeField] protected float reloadTime;
     [Tooltip("Cooldown in seconds from one bullet stream to another.")]
@@ -63,6 +63,8 @@ public abstract class A_Weapon : MonoBehaviour, I_Item
     /// Used to check if the weapon can shoot.
     /// </summary>
     private bool canShoot = true;
+
+    public int NumberAmmoMagazine { get => numberAmmoMagazine;}
 
 
 

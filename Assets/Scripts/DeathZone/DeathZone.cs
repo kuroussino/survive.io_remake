@@ -2,12 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DeathZone : MonoBehaviour, I_DamageOwner
 {
     [SerializeField] DeathZoneHitbox deathZoneHitbox;
     [SerializeField] DeathZoneHitbox safeZoneHitbox;
+
+    [SerializeField] float deathZoneStateDuration;
+    float deathZoneCurrTimeLeft;
+
+    [SerializeField] float safeZoneMovementDuration;
 
     [SerializeField] VariableReference<float> secondsPerDamageTick;
     [SerializeField] VariableReference<float> damagePerDamageTick;
@@ -16,6 +22,14 @@ public class DeathZone : MonoBehaviour, I_DamageOwner
     private void Awake()
     {
         dictDamageableDamageTick = new Dictionary<I_Damageable, PlayerDeathZoneInfo>();
+        
+        deathZoneCurrTimeLeft = deathZoneStateDuration;
+
+        deathZoneHitbox.transform.position = Vector3.zero;
+        safeZoneHitbox.transform.position = Vector3.zero;
+
+        deathZoneHitbox.transform.localScale = new Vector3(15f,15f,15f);
+        safeZoneHitbox.transform.localScale = new Vector3(10f, 10f, 10f);
     }
     private void OnEnable()
     {
@@ -53,6 +67,8 @@ public class DeathZone : MonoBehaviour, I_DamageOwner
         {
             dictDamageableDamageTick.Remove(item);
         }
+
+        DeathZoneBehaviour();
     }
 
     private void OnSafeZoneHitbox(I_Damageable damageable, bool triggerEnter)
@@ -80,13 +96,29 @@ public class DeathZone : MonoBehaviour, I_DamageOwner
         }
     }
 
+    void DeathZoneBehaviour()
+    {
+        deathZoneCurrTimeLeft -= Time.deltaTime;
+
+        if (deathZoneCurrTimeLeft <= 0)
+        {
+            deathZoneCurrTimeLeft = deathZoneStateDuration;
+            MoveToPosition(new Vector3(UnityEngine.Random.Range(-18f, 18f), UnityEngine.Random.Range(-18f, 18f)), safeZoneMovementDuration);
+            if (safeZoneHitbox.transform.localScale.x - 2f >= 1f || safeZoneHitbox.transform.localScale.y - 2f >= 1f)
+                Scale(safeZoneHitbox.transform.localScale - new Vector3(2f, 2f, 2f), safeZoneMovementDuration);
+        }
+    }
+
     void MoveToPosition(Vector3 position, float timeToMove)
     {
-        transform.DOMove(position, timeToMove);
+        safeZoneHitbox.transform.DOMove(position, timeToMove)
+            .SetEase(Ease.InSine);
     }
     void Scale(Vector3 newScale, float timeToScale)
     {
-        transform.DOScale(newScale, timeToScale);
+        safeZoneHitbox.transform.DOScale(newScale, timeToScale)
+            .SetEase(Ease.InSine);
+
     }
 }
 

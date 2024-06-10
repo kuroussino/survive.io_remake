@@ -1,15 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerResources : MonoBehaviour
 {
+    public Action playerDeath;
     [SerializeField] VariableReference<float> _baseMaxHealth;
     float currentHealth;
     float maxHealth;
-    float CurrentHealth { get => currentHealth; set => currentHealth = value; }
-    float MaxHealth { get => maxHealth; set => maxHealth = value; }
-
+    public float CurrentHealth { get => currentHealth; private set => currentHealth = value; }
+    public float MaxHealth { get => maxHealth; private set => maxHealth = value; }
+    public bool IsAlive => currentHealth > 0;
     private void Awake()
     {
         CurrentHealth = _baseMaxHealth.Value;
@@ -40,6 +42,6 @@ public class PlayerResources : MonoBehaviour
     }
     void Die()
     {
-        Debug.Log("Dead");
+        playerDeath?.Invoke();
     }
 }

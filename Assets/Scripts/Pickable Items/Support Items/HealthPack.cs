@@ -16,5 +16,6 @@ public sealed class HealthPack : A_Support
     public void HealEffect(Player player)
     {
         player.Heal(amountHealthHealed);
+        EventsManager.OnPlayerUseHealthPack?.Invoke();
     }
 }

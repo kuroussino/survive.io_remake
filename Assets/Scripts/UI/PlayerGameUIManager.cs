@@ -89,6 +89,7 @@ public class PlayerGameUIManager : MonoBehaviour
         playerAliveUI.SetActive(true);
         playerDeathUI.SetActive(false);
         playerHPSlider.maxValue = maxHP;
+        playerHPSlider.value = maxHP;
         playerHPSlider.minValue= 0;
         playerHPSlider.value = maxHP;
         currentBullets = 0;
@@ -101,23 +102,23 @@ public class PlayerGameUIManager : MonoBehaviour
     /// This method is called by an event when the local player take damage
     /// </summary>
     /// <param name="amount"></param>
-    private void OnDamageTaken(float amount)
+    private void OnDamageTaken(float newHealthAmount, float maxHealth)
     {
-        currentHP -= amount;
-        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-        playerHPSlider.value = currentHP;
-        CheckLowHealthPlayer(currentHP);
+        newHealthAmount = Mathf.Clamp(newHealthAmount, 0, maxHealth);
+        playerHPSlider.maxValue = maxHealth;
+        playerHPSlider.value = newHealthAmount;
+        CheckLowHealthPlayer(newHealthAmount, maxHealth);
     }
     /// <summary>
     /// This method is called by an event when the local player will heal, updating the amount of heal
     /// </summary>
     /// <param name="amount"></param>
-    private void OnPlayerHeal(float amount)
+    private void OnPlayerHeal(float newHealthAmount, float maxHealth)
     {
-        currentHP += amount;
-        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-        playerHPSlider.value = currentHP;
-        CheckLowHealthPlayer(currentHP);
+        newHealthAmount = Mathf.Clamp(newHealthAmount, 0, maxHealth);
+        playerHPSlider.maxValue = maxHealth;
+        playerHPSlider.value = newHealthAmount;
+        CheckLowHealthPlayer(newHealthAmount, maxHealth);
     }
     /// <summary>
     /// This method is called by an event when the local player get a new primary weapon
@@ -219,9 +220,9 @@ public class PlayerGameUIManager : MonoBehaviour
     /// The moethod is called when taking or healing damage in order to check if the player is lowHealth or not.
     /// </summary>
     /// <param name="hp"></param>
-    private void CheckLowHealthPlayer(float hp)
+    private void CheckLowHealthPlayer(float currentHP, float maxHP)
     {
-        if (hp > maxHP*0.25)
+        if (currentHP > maxHP * 0.25)
         {
             playerHPSlider.fillRect.GetComponent<Image>().color = Color.white;
         }
