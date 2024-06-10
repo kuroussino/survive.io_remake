@@ -139,18 +139,17 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
 
         responseInfo.attackAbsorbed = true;
         resources?.TakeDirectDamage(info.damageAmount);
-        TakeDamageClientRpc(info.damageAmount);
+        UpdatePlayerHealthClientRpc(resources.CurrentHealth, resources.MaxHealth);
         return responseInfo;
     }
 
     [ClientRpc]
-    public void TakeDamageClientRpc(float totalDamage)
+    public void UpdatePlayerHealthClientRpc(float currentHealth, float maxHealth)
     {
         if (!IsOwner)
             return;
         
-        Debug.Log($"{name} took damage!");
-        EventsManager.OnPlayerDamage?.Invoke(totalDamage);
+        EventsManager.OnPlayerDamage?.Invoke(currentHealth, maxHealth);
     }
     public bool TryCollectItem(I_Item item)
     {
@@ -159,6 +158,7 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
     public void Heal(float amount)
     {
         resources?.Heal(amount);
+        UpdatePlayerHealthClientRpc(resources.CurrentHealth, resources.MaxHealth);
     }
     private void OnWeaponEquipped(A_Weapon weapon)
     {

@@ -35,11 +35,11 @@ public static partial class EventsManager
     //Initialize the UI of everyPlayer at the start of the game .
     public static Action<float,int,A_Weapon> PlayerUIInitialize;
     //Event called when the local player takes damage.
-    public static Action<float> OnPlayerDamage;
+    public static Action<float, float> OnPlayerDamage;
     //Event called when the player picks up a new weapon, as parameters are needed the weapon and the starting load of ammo on it.
     public static Action<A_Weapon,int> OnNewWeapon;
     //Event called when the player heals himself, as the parameter is needed the amount of heal he restore.
-    public static Action<float> OnPlayerHeal;
+    public static Action<float, float> OnPlayerHeal;
     //Event called when the player picks up an health pack.
     public static Action OnGrabHealthPack;
     //Event called when the player is using an health pack.Did separate methods in case there are more ways to heal the player.

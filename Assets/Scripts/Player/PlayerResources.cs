@@ -36,7 +36,6 @@ public class PlayerResources : MonoBehaviour
         if (healAmount < 0)
             return;
 
-        EventsManager.OnPlayerHeal?.Invoke(healAmount);
         float newHealth = CurrentHealth + healAmount;
         newHealth = Mathf.Clamp(newHealth, 0, MaxHealth);
         CurrentHealth = newHealth;
