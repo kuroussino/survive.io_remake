@@ -513,7 +513,7 @@ public class LobbyManager : MonoBehaviour
         {
             PowerConsole.Log(CI.PowerConsole.LogLevel.Debug, $"HOST START GAME ! YEAH!");
             NetworkManager.Singleton.SceneManager.OnLoadComplete += LoadCompleteEvent;
-            NetworkManager.Singleton.SceneManager.LoadScene("TestGameplay", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene("RaduTest", LoadSceneMode.Single);
         }
     }
 
