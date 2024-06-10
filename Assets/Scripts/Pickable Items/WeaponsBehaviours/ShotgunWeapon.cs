@@ -33,6 +33,7 @@ public sealed class ShotgunWeapon : A_Weapon
             Debug.Log("Shoot");
         }
         currentNumberAmmoMagazine -= numberOfBulletsPerShoot;
+        EventsManager.OnUpdateBulltes?.Invoke(NumberAmmoMagazine);
         EventsManager.WeaponUpdateBullets?.Invoke(currentNumberAmmoMagazine);
     }
 }

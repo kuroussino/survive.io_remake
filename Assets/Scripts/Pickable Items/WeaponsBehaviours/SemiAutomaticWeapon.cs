@@ -20,6 +20,7 @@ public sealed class SemiAutomaticWeapon : A_Weapon
         bullet.SetDataBulletFromWeapon(bulletData);
         Debug.Log("Shoot");
         currentNumberAmmoMagazine--;
+        EventsManager.OnUpdateBulltes?.Invoke(NumberAmmoMagazine);
         EventsManager.WeaponUpdateBullets?.Invoke(currentNumberAmmoMagazine);
     }
 

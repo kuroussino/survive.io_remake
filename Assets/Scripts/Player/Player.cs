@@ -14,7 +14,6 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
     PlayerResources resources;
     [SerializeField] bool canActRegardless;
     [SerializeField] bool canMoveRegardless;
-
     bool isPressingFireInput = false;
 
     #region Mono
@@ -28,34 +27,51 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
     {
         EventsManager.playerMovementInput += OnPlayerMovementInput;
         EventsManager.playerFireInput += OnPlayerFireInput;
-        inventory.weaponEquipped += OnWeaponEquipped;
+        if(inventory != null)
+        {
+            inventory.weaponEquipped += OnWeaponEquipped;
+        }
+        if (resources != null)
+        {
+            resources.playerDeath += OnPlayerDeath;
+        }
     }
 
     private void OnDisable()
     {
         EventsManager.playerMovementInput -= OnPlayerMovementInput;
         EventsManager.playerFireInput -= OnPlayerFireInput;
-        inventory.weaponEquipped += OnWeaponEquipped;
+        if (inventory != null)
+        {
+            inventory.weaponEquipped -= OnWeaponEquipped;
+        }
+        if (resources != null)
+        {
+            resources.playerDeath -= OnPlayerDeath;
+        }
     }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if (IsOwner)
-            EventsManager.changePlayerCameraTarget?.Invoke(transform);
+        if (!IsOwner)
+            return;
+
+        EventsManager.changePlayerCameraTarget?.Invoke(transform);
+        EventsManager.PlayerUIInitialize?.Invoke(resources.MaxHealth, 1, null);
     }
     #endregion
 
     #region Input
     private void Update()
     {
-        if (!IsControlledPlayer())
+        if (!CanAct())
             return;
 
         movement.OnAimInput();
     }
     private void OnPlayerFireInput(bool fire)
     {
-        if (!IsControlledPlayer())
+        if (!CanAct())
             return;
 
         OnPlayerFireInputServerRpc(fire);
@@ -84,13 +100,16 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
     }
     private void OnPlayerMovementInput(Vector2 vector)
     {
-        if (!canMoveRegardless && !IsControlledPlayer())
+        if (!canMoveRegardless && !CanAct())
             return;
 
         movement.OnMovementInput(vector);
     }
-    bool IsControlledPlayer()
+    bool CanAct()
     {
+        if (resources != null && !resources.IsAlive)
+            return false;
+
         if (canActRegardless)
             return true;
 
@@ -111,6 +130,7 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
             return responseInfo;
         }
 
+        responseInfo.attackAbsorbed = true;
         Debug.Log($"{name} took damage!");
         resources?.TakeDirectDamage(info.damageAmount);
         return responseInfo;
@@ -126,5 +146,9 @@ public class Player : NetworkBehaviour, I_Damageable, I_DamageOwner
     private void OnWeaponEquipped(A_Weapon weapon)
     {
         movement.EquipWeapon(weapon);
+    }
+    private void OnPlayerDeath()
+    {
+        EventsManager.OnPlayerDead?.Invoke();
     }
 }
