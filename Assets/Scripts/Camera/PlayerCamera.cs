@@ -13,6 +13,8 @@ public class PlayerCamera : MonoBehaviour
     CinemachineTransposer _transposer;
     [SerializeField] VariableReference<float> panSpeed;
     [SerializeField] VariableReference<float> maxDistanceFromPlayer;
+    [SerializeField] float[] lensStates;
+    int currLensState;
     Vector2 currentPan;
     bool isPanning;
     private void Awake()
@@ -91,5 +93,21 @@ public class PlayerCamera : MonoBehaviour
             offset *= maxDistanceFromPlayer;
         }
         _transposer.m_FollowOffset = new Vector3(offset.x, offset.y, -10);
+    }
+
+    void OnSetScope(float value)
+    {
+        int indexTargetDelta = (int)value;
+
+        if (currLensState + indexTargetDelta > 0 && currLensState + indexTargetDelta < lensStates.Length)
+        {
+            currLensState += indexTargetDelta;
+            
+        }
+        else 
+        {
+            currLensState = 0;
+        }
+        _camera.m_Lens.OrthographicSize = lensStates[currLensState];
     }
 }
